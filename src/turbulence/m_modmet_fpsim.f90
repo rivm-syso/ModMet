@@ -17,6 +17,7 @@ use modmet_constants, only: pid2
     private
     public :: modmet_fpsim
 contains
+    pure function modmet_fpsim(eta) result(fpsim_result)
    ! ===========================================================
    ! Function: modmet_fpsim
    ! Description: Computes the momentum stability correction
@@ -24,7 +25,6 @@ contains
    ! input: eta - stability parameter z/L [-]
    ! output: fpsim_result - momentum stability correction [-]
    ! ===========================================================
-    pure function modmet_fpsim(eta) result(fpsim_result)
       real, intent(in) :: eta
       real :: fpsim_result
       real :: x
