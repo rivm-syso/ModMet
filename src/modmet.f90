@@ -27,6 +27,11 @@ module modmet
   use m_modmet_find_zero, only: modmet_find_zero, modmet_solver_result
 
   implicit none (type, external)
+
+
+  character(len=*), parameter :: VERSION = "v0.6.1"
+  character(len=*), parameter :: BUILD_DATE = "2026-06-12"
+
   private
 
 
@@ -40,6 +45,8 @@ module modmet
       modmet_obuk, &
       modmet_tst, modmet_tst_result, &
   ! solvers
-      modmet_find_zero, modmet_solver_result
+      modmet_find_zero, modmet_solver_result, &
+    ! version info
+        VERSION, BUILD_DATE
 
 end module modmet
