@@ -12,7 +12,7 @@
 !   - Beljaars, Holtslag, and Van Westrhenen (1989), KNMI TR-112.
 !------------------------------------------------------------------------------
 module m_modmet_flxln2
-   use modmet_constants, only: VONK, TR
+   use modmet_constants, only: VONK, TR, RO, CP_AIR, LAMBDA
 
    use m_modmet_radiat, only: modmet_radiat, modmet_radiat_result
    use m_modmet_find_zero, only: modmet_find_zero, modmet_solver_result
@@ -27,6 +27,9 @@ module m_modmet_flxln2
       real :: ust
       real :: ol
       real :: kin
+      real :: tau
+      real :: h
+      real :: le
    end type modmet_flxln2_result
 
 
@@ -42,7 +45,7 @@ contains
    ! input: u2             - wind speed at height zu2 [m/s] (at height of wind measurements)
    ! input: zu1            - lower wind measurement height [m] (usually the roughness length)
    ! input: zu2            - upper wind measurement height [m] (usually z of wind measurements)
-   ! input: T              - air temperature [K]
+   ! input: T              - air temperature [C]
    ! input: cloud_fraction - cloud fraction [0..1]
    ! input: sinphi         - sine of solar elevation angle [-]
    ! input: kin            - incoming shortwave radiation [W/m^2]
@@ -50,7 +53,7 @@ contains
    ! output: result%ol     - Obukhov length [m]
    ! output: result%kin    - incoming shortwave radiation used [W/m^2]
    ! ===========================================================
-   function modmet_flxln2(u1, u2, zu1, zu2, T, cloud_fraction, sinphi, kin) result(result)
+   pure function modmet_flxln2(u1, u2, zu1, zu2, T, cloud_fraction, sinphi, kin) result(result)
       real, intent(in) :: u1, u2
       real, intent(in) :: zu1, zu2
       real, intent(in) :: T, cloud_fraction, sinphi, kin
@@ -88,6 +91,10 @@ contains
       result%ol = solver_result%payload(1) ! Obukhov length from the momentum function
       result%kin = rad_result%kin
 
+      result%tau = RO * result%ust**2
+      result%h = -RO * CP_AIR * solver_result%payload(2) * result%ust
+      result%le = -RO * LAMBDA * solver_result%payload(3) * result%ust
+
    contains
       ! ===========================================================
       ! Function: momentum_f
@@ -113,6 +120,8 @@ contains
             modmet_fpsim(zu2/ol) + modmet_fpsim(zu1/ol))
 
          fx%payload(1) = ol
+         fx%payload(2) = tst_out%tst
+         fx%payload(3) = tst_out%qst
 
       end function momentum_f
 
