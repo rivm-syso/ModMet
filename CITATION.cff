@@ -9,4 +9,4 @@ authors:
 - family-names: "van Jaarsveld"
   given-names: "Hans"
 title: "ModMet: A Modular Meteorological Library for Land Surface Modelling"
-version: v0.6.1
+version: v1.0.0

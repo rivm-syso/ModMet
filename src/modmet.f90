@@ -29,7 +29,7 @@ module modmet
   implicit none (type, external)
 
 
-  character(len=*), parameter :: VERSION = "v0.6.1"
+  character(len=*), parameter :: VERSION = "v1.0.0"
   character(len=*), parameter :: BUILD_DATE = "2026-06-12"
 
   private
