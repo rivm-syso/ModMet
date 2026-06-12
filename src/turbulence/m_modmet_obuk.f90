@@ -14,6 +14,7 @@ module m_modmet_obuk
    private
    public :: modmet_obuk
 contains
+pure function modmet_obuk(ust, tst) result(ol)
    ! ===========================================================
    ! Function: modmet_obuk
    ! Description: Computes Obukhov length and returns a large-magnitude
@@ -22,7 +23,6 @@ contains
    ! input: tst - temperature scale
    ! output: ol - Obukhov length [m]
    ! ===========================================================
-pure function modmet_obuk(ust, tst) result(ol)
       real, intent(in) :: ust, tst
       real :: ol
 

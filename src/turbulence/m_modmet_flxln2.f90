@@ -37,6 +37,7 @@ module m_modmet_flxln2
    private
    public :: modmet_flxln2, modmet_flxln2_result
 contains
+   pure function modmet_flxln2(u1, u2, zu1, zu2, T, cloud_fraction, sinphi, kin) result(result)
    ! ===========================================================
    ! Function: modmet_flxln2
    ! Description: Solves for friction velocity and returns associated
@@ -53,7 +54,6 @@ contains
    ! output: result%ol     - Obukhov length [m]
    ! output: result%kin    - incoming shortwave radiation used [W/m^2]
    ! ===========================================================
-   pure function modmet_flxln2(u1, u2, zu1, zu2, T, cloud_fraction, sinphi, kin) result(result)
       real, intent(in) :: u1, u2
       real, intent(in) :: zu1, zu2
       real, intent(in) :: T, cloud_fraction, sinphi, kin
@@ -96,6 +96,7 @@ contains
       result%le = -RO * LAMBDA * solver_result%payload(3) * result%ust
 
    contains
+      pure function momentum_f(ust_g) result(fx)
       ! ===========================================================
       ! Function: momentum_f
       ! Description: Residual function for momentum profile inversion.
@@ -103,7 +104,6 @@ contains
       ! output: result%value  - residual for zero-finding
       ! output: result%payload(1) - Obukhov length [m]
       ! ===========================================================
-      pure function momentum_f(ust_g) result(fx)
          real, intent(in) :: ust_g
          type(modmet_tst_result) :: tst_out
          real :: tstv, ol

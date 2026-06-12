@@ -14,6 +14,7 @@ module m_modmet_helpers
       module procedure missing_real, missing_int
    end interface
 contains
+   pure logical function missing_real(x)
    ! ===========================================================
    ! Function: missing_real
    ! Description: Checks if a real value is considered missing based on specific values.
@@ -21,12 +22,12 @@ contains
    ! input: x - the real value to check
    ! output: logical - .true. if x is considered missing, .false. otherwise
    ! ===========================================================
-   pure logical function missing_real(x)
       real, intent(in) :: x
       real, parameter :: EPS = 1.0e-5
       missing_real = (abs(x + 999.) <= EPS .or. abs(x + 9999.) <= EPS)
    end function missing_real
 
+   pure logical function missing_int(x)
    ! ===========================================================
    ! Function: missing_int
    ! Description: Checks if an integer value is considered missing based on specific values.
@@ -34,7 +35,6 @@ contains
    ! input: x - the integer value to check
    ! output: logical - .true. if x is considered missing, .false. otherwise
    ! ===========================================================
-   pure logical function missing_int(x)
       integer, intent(in) :: x
       missing_int = (x == -999) .or. (x == -9999)
    end function missing_int
