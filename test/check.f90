@@ -23,6 +23,8 @@ program tester
 
     use test_modmet_version, only: collect_modmet_version_tests
 
+    use test_modmet_lusthov, only: collect_modmet_lusthov_tests
+
     implicit none (type, external)
 
     ! Initialize test suites
@@ -53,7 +55,9 @@ program tester
         new_testsuite("modmet_flxln2_tests", collect_modmet_flxln2_tests), &
         ! test 9: helper function test suite registration
         new_testsuite("modmet_helpers_tests", collect_modmet_helpers_tests), &
-        ! test 10: version test suite registration
+        ! test 10: lusthov test suite registration
+        new_testsuite("modmet_lusthov_tests", collect_modmet_lusthov_tests), &
+        ! test 11: version test suite registration
         new_testsuite("modmet_version_tests", collect_modmet_version_tests) &
         ]
 

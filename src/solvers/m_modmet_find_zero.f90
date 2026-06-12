@@ -31,7 +31,7 @@ module m_modmet_find_zero
    public :: modmet_find_zero, modmet_solver_result
 contains
 
-   function modmet_find_zero(f, x0, x1, tol, max_iter) result(root)
+   pure function modmet_find_zero(f, x0, x1, tol, max_iter) result(root)
    ! ===========================================================
    ! Function: modmet_find_zero
    ! Description: Finds a root of f(x) in [x0, x1] using a safeguarded

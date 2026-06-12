@@ -37,7 +37,7 @@ module m_modmet_flxln2
    private
    public :: modmet_flxln2, modmet_flxln2_result
 contains
-   function modmet_flxln2(u1, u2, zu1, zu2, T, cloud_fraction, sinphi, kin) result(result)
+   pure function modmet_flxln2(u1, u2, zu1, zu2, T, cloud_fraction, sinphi, kin) result(result)
    ! ===========================================================
    ! Function: modmet_flxln2
    ! Description: Solves for friction velocity and returns associated
