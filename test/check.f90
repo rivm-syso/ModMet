@@ -21,6 +21,8 @@ program tester
 
     use test_modmet_helpers, only: collect_modmet_helpers_tests
 
+    use test_modmet_version, only: collect_modmet_version_tests
+
     implicit none (type, external)
 
     ! Initialize test suites
@@ -50,7 +52,9 @@ program tester
         ! test 8: turbulence flux solver test suite registration
         new_testsuite("modmet_flxln2_tests", collect_modmet_flxln2_tests), &
         ! test 9: helper function test suite registration
-        new_testsuite("modmet_helpers_tests", collect_modmet_helpers_tests) &
+        new_testsuite("modmet_helpers_tests", collect_modmet_helpers_tests), &
+        ! test 10: version test suite registration
+        new_testsuite("modmet_version_tests", collect_modmet_version_tests) &
         ]
 
     do is = 1, size(testsuites)
