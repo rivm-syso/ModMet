@@ -16,6 +16,7 @@ module m_modmet_cloud_fraction
 
 
 contains
+   function modmet_cloud_fraction(lat, lon, jcm2, mt, dy, hr) result(cloud_fraction)
    ! ===========================================================
    ! Function: modmet_cloud_fraction
    ! Description: Estimates cloud fraction from measured global radiation.
@@ -28,7 +29,6 @@ contains
    ! input: hr    - hour [0..23]
    ! output: cloud_fraction - estimated cloud fraction [0..1] or -999.0
    ! ===========================================================
-   function modmet_cloud_fraction(lat, lon, jcm2, mt, dy, hr) result(cloud_fraction)
 
       real, intent(in) :: lat, lon ! latitude and longitude [degrees]
       real, intent(in) :: jcm2 ! global radiation [J/cm^2]

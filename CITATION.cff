@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Voorneveld"
+  given-names: "M.D."
+  orcid: "https://orcid.org/0009-0006-8532-5462"
+- family-names: "Beljaars"
+  given-names: "Anton"
+- family-names: "van Jaarsveld"
+  given-names: "Hans"
+title: "ModMet: A Modular Meteorological Library for Land Surface Modelling"
+version: v1.0.0

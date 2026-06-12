@@ -33,6 +33,7 @@ use m_modmet_helpers, only: modmet_missing
     real, parameter :: SPHI0 = 0.03
 
 contains
+    pure function modmet_radiat(sinphi, n, kin) result(result)
     ! ===========================================================
     ! Function: modmet_radiat
     ! Description: Computes incoming shortwave radiation and isothermal
@@ -43,7 +44,6 @@ contains
     ! output: result%kin  - incoming shortwave radiation used [W/m^2]
     ! output: result%qsti - isothermal net radiation [W/m^2]
     ! ===========================================================
-    pure function modmet_radiat(sinphi, n, kin) result(result)
         real, intent(in) :: sinphi, n
         real, intent(in) :: kin
         real :: sphi, kst, lsti

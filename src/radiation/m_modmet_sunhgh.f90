@@ -15,6 +15,7 @@ module m_modmet_sunhgh
    private
    public :: modmet_sunhgh
 contains
+   pure function modmet_sunhgh(lat, lon, mt, dy, hr, min) result(sinphi)
    ! ===========================================================
    ! Function: modmet_sunhgh
    ! Description: Computes the sine of the solar elevation angle.
@@ -26,7 +27,6 @@ contains
    ! input: min - minute [0..59]
    ! output: sinphi - sine of solar elevation angle [-]
    ! ===========================================================
-   pure function modmet_sunhgh(lat, lon, mt, dy, hr, min) result(sinphi)
       real, intent(in) :: lat, lon ! latitude and longitude [degrees]
       integer, intent(in) :: mt, dy, hr, min ! month, day, hour, minute
       real :: sinphi

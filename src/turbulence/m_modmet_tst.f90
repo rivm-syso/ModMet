@@ -20,6 +20,7 @@ module m_modmet_tst
    private
    public :: modmet_tst, modmet_tst_result
 contains
+   pure function modmet_tst(ust, t, qsti) result(res)
    ! ===========================================================
    ! Function: modmet_tst
    ! Description: Computes temperature scale (tst) and humidity
@@ -30,7 +31,6 @@ contains
    ! output: res%tst - temperature scale
    ! output: res%qst - humidity scale
    ! ===========================================================
-   pure function modmet_tst(ust, t, qsti) result(res)
 
       real, intent(in) :: ust, t, qsti
       type(modmet_tst_result) :: res
