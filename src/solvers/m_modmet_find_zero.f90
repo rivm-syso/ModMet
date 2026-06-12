@@ -44,7 +44,7 @@ contains
    ! output: root    - solver result (root, value, payload)
    ! ===========================================================
 
-   function modmet_find_zero(f, x0, x1, tol, max_iter) result(root)
+   pure function modmet_find_zero(f, x0, x1, tol, max_iter) result(root)
       procedure(solver_function) :: f  ! function for which we want to find a root
       real, intent(in) :: x0, x1, tol ! min, max, tolerance
       integer, intent(in) :: max_iter ! maximum number of iterations

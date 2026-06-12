@@ -1,6 +1,6 @@
 module test_modmet_version
     use testdrive, only : new_unittest, unittest_type, error_type, check
-    
+
     use modmet, only: VERSION, BUILD_DATE
 
     implicit none (type, external)

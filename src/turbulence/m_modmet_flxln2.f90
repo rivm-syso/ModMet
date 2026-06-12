@@ -53,7 +53,7 @@ contains
    ! output: result%ol     - Obukhov length [m]
    ! output: result%kin    - incoming shortwave radiation used [W/m^2]
    ! ===========================================================
-   function modmet_flxln2(u1, u2, zu1, zu2, T, cloud_fraction, sinphi, kin) result(result)
+   pure function modmet_flxln2(u1, u2, zu1, zu2, T, cloud_fraction, sinphi, kin) result(result)
       real, intent(in) :: u1, u2
       real, intent(in) :: zu1, zu2
       real, intent(in) :: T, cloud_fraction, sinphi, kin
