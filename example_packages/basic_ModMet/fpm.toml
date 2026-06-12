@@ -20,7 +20,6 @@ source-form = "free"
 
 [dependencies]
 ModMet.git = "https://github.com/rivm-syso/ModMet.git"
-ModMet.branch = "develop"
 
 # Use a specific tag or commit for reproducibility, e.g.:3
 # ModMet.branch = "main" ! For testing it is better to use a specific tag or commit, e.g.: feature/paths_as_procedures
