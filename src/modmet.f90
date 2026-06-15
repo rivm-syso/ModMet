@@ -10,43 +10,45 @@
 !   calculations and supporting numerical methods.
 !------------------------------------------------------------------------------
 module modmet
-  use m_modmet_helpers, only: modmet_missing
+   use m_modmet_helpers, only: modmet_missing
 
-  ! radiation
-  use m_modmet_radiat, only: modmet_radiat, modmet_radiat_result
-  use m_modmet_sunhgh, only: modmet_sunhgh
-  use m_modmet_cloud_fraction, only: modmet_cloud_fraction
+   ! radiation
+   use m_modmet_radiat, only: modmet_radiat, modmet_radiat_result
+   use m_modmet_sunhgh, only: modmet_sunhgh
+   use m_modmet_cloud_fraction, only: modmet_cloud_fraction
 
-  ! turbulence
-  use m_modmet_flxln2, only: modmet_flxln2, modmet_flxln2_result
-  use m_modmet_fpsim, only: modmet_fpsim
-  use m_modmet_obuk, only: modmet_obuk
-  use m_modmet_tst, only: modmet_tst, modmet_tst_result
+   ! turbulence
+   use m_modmet_flxln2, only: modmet_flxln2, modmet_flxln2_result
+   use m_modmet_fpsim, only: modmet_fpsim
+   use m_modmet_obuk, only: modmet_obuk
+   use m_modmet_tst, only: modmet_tst, modmet_tst_result
+   use m_modmet_lusthov, only: modmet_lusthov, modmet_lusthov_result
 
-  ! solvers
-  use m_modmet_find_zero, only: modmet_find_zero, modmet_solver_result
+   ! solvers
+   use m_modmet_find_zero, only: modmet_find_zero, modmet_solver_result
 
-  implicit none (type, external)
+   implicit none (type, external)
 
 
   character(len=*), parameter :: VERSION = "v1.0.1"
   character(len=*), parameter :: BUILD_DATE = "2026-06-15"
 
-  private
+   private
 
 
-  public :: modmet_missing, &
-  ! radiation
+   public :: modmet_missing, &
+   ! radiation
       modmet_radiat, modmet_radiat_result, &
       modmet_sunhgh, modmet_cloud_fraction, &
-  ! turbulence
+   ! turbulence
       modmet_flxln2, modmet_flxln2_result, &
       modmet_fpsim, &
       modmet_obuk, &
       modmet_tst, modmet_tst_result, &
-  ! solvers
+      modmet_lusthov, modmet_lusthov_result, &
+   ! solvers
       modmet_find_zero, modmet_solver_result, &
-    ! version info
-        VERSION, BUILD_DATE
+   ! version info
+      VERSION, BUILD_DATE
 
 end module modmet
