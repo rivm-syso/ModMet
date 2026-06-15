@@ -3,3 +3,4 @@ build/
 **.gcov
 **.gcno
 coverage_html/
+docs/

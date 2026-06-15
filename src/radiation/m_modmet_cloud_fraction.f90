@@ -16,24 +16,36 @@ module m_modmet_cloud_fraction
 
 
 contains
-   function modmet_cloud_fraction(lat, lon, jcm2, mt, dy, hr) result(cloud_fraction)
    ! ===========================================================
    ! Function: modmet_cloud_fraction
    ! Description: Estimates cloud fraction from measured global radiation.
    !              Returns -999.0 for invalid month/day/hour input.
    ! input: lat   - latitude [degrees]
    ! input: lon   - longitude [degrees]
-   ! input: jcm2 - global radiation [J/cm^2]
+   ! input: jcm2  - global radiation [J/cm^2]
    ! input: mt    - month [1..12]
    ! input: dy    - day [1..31]
    ! input: hr    - hour [0..23]
    ! output: cloud_fraction - estimated cloud fraction [0..1] or -999.0
    ! ===========================================================
+   !! Estimates cloud fraction from measured global radiation and solar geometry.
+   !!   Reference: KNMI WR 83-4 cloud-cover parameterization.
+   function modmet_cloud_fraction(lat, lon, jcm2, mt, dy, hr) result(cloud_fraction)
 
-      real, intent(in) :: lat, lon ! latitude and longitude [degrees]
-      real, intent(in) :: jcm2 ! global radiation [J/cm^2]
-      integer, intent(in) :: mt, dy, hr ! month, day, hour
+      real, intent(in) :: lat
+      !! latitude [degrees]
+      real, intent(in) :: lon
+      !! longitude [degrees]
+      real, intent(in) :: jcm2
+      !! global radiation [J/cm^2]
+      integer, intent(in) :: mt
+      !! month [1..12]
+      integer, intent(in) :: dy
+      !! day [1..31]
+      integer, intent(in) :: hr
+      !! hour [0..23]
       real :: cloud_fraction
+      !! estimated cloud fraction [0..1] or -999.0
 
       ! local variables
       real :: wl, tlat, t, d,dd, ddd, sl, decli, hangle, sifi, el, globgem, globber

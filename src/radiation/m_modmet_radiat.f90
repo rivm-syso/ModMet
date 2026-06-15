@@ -33,7 +33,6 @@ use m_modmet_helpers, only: modmet_missing
     real, parameter :: SPHI0 = 0.03
 
 contains
-    pure function modmet_radiat(sinphi, n, kin) result(result)
     ! ===========================================================
     ! Function: modmet_radiat
     ! Description: Computes incoming shortwave radiation and isothermal
@@ -44,8 +43,15 @@ contains
     ! output: result%kin  - incoming shortwave radiation used [W/m^2]
     ! output: result%qsti - isothermal net radiation [W/m^2]
     ! ===========================================================
-        real, intent(in) :: sinphi, n
+    !! Computes incoming shortwave radiation and isothermal net radiation.
+    !!   Reference: Van Ulden and Holtslag (1985), JCAM 24, 1196-1207.
+    pure function modmet_radiat(sinphi, n, kin) result(result)
+        real, intent(in) :: sinphi
+        !! sine of solar elevation angle [-]
+        real, intent(in) :: n
+        !! cloudiness factor [-]
         real, intent(in) :: kin
+        !! incoming shortwave radiation [W/m^2] or missing
         real :: sphi, kst, lsti
         type(modmet_radiat_result) :: result
 
