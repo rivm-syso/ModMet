@@ -52,17 +52,38 @@ contains
    ! output: result%evap   - evaporation rate [mm/hr]
    ! ===========================================================
 
+   !! Computes near-surface turbulence and flux outputs from forcing and surface inputs.
+   !!   Reference: Beljaars, Holtslag, and Van Westrhenen (1989), KNMI TR-112.
    pure function modmet_lusthov(mt, dy, hr, min,&
         lat, lon, &
         kin, z0, &
         zra, u_zra, &
         T, cloud_fraction &
     ) result(result)
-        integer, intent(in) :: mt, dy, hr, min
-        real, intent(in) :: lat, lon
-        real, intent(in) :: kin, z0
-        real, intent(in) :: zra, u_zra
-        real, intent(in) :: T, cloud_fraction
+         integer, intent(in) :: mt
+         !! month [1..12]
+         integer, intent(in) :: dy
+         !! day [1..31]
+         integer, intent(in) :: hr
+         !! hour (GMT) [0..23]
+         integer, intent(in) :: min
+         !! minute [0..59]
+         real, intent(in) :: lat
+         !! latitude [degrees, north positive]
+         real, intent(in) :: lon
+         !! longitude [degrees, east positive]
+         real, intent(in) :: kin
+         !! incoming shortwave radiation [W/m^2]
+         real, intent(in) :: z0
+         !! surface roughness length [m]
+         real, intent(in) :: zra
+         !! wind measurement/evaluation height [m]
+         real, intent(in) :: u_zra
+         !! wind speed at zra [m/s]
+         real, intent(in) :: T
+         !! air temperature [degC]
+         real, intent(in) :: cloud_fraction
+         !! cloud fraction [-] (0..1)
 
         type(modmet_flxln2_result) :: flxln2_result
         type(modmet_lusthov_result) :: result

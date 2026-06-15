@@ -4,10 +4,6 @@
 !             Anton Beljaars, KNMI (original SUNHGH routine)
 ! Created:    June 11 2026
 ! Updated:    June 11 2026
-! Description:
-!   This module computes the sine of the solar elevation angle from
-!   geographic position and date-time inputs.
-!   Reference: Holtslag and Van Ulden (1983), JCAM 22, 517-529.
 !------------------------------------------------------------------------------
 module m_modmet_sunhgh
     use modmet_constants, only: PI, PI180
@@ -15,21 +11,29 @@ module m_modmet_sunhgh
    private
    public :: modmet_sunhgh
 contains
+   !! This module computes the sine of the solar elevation angle from
+   !!   geographic position and date-time inputs.
+   !!   Reference: Holtslag and Van Ulden (1983), JCAM 22, 517-529.
    pure function modmet_sunhgh(lat, lon, mt, dy, hr, min) result(sinphi)
-   ! ===========================================================
-   ! Function: modmet_sunhgh
-   ! Description: Computes the sine of the solar elevation angle.
-   ! input: lat - latitude [degrees]
-   ! input: lon - longitude [degrees]
-   ! input: mt  - month [1..12]
-   ! input: dy  - day [1..31]
-   ! input: hr  - hour [0..23]
-   ! input: min - minute [0..59]
-   ! output: sinphi - sine of solar elevation angle [-]
-   ! ===========================================================
-      real, intent(in) :: lat, lon ! latitude and longitude [degrees]
-      integer, intent(in) :: mt, dy, hr, min ! month, day, hour, minute
+
+   ! Arguments
+      real, intent(in) :: lat
+         !! latitude in degrees, positive northward
+      real, intent(in) :: lon
+         !! longitude in degrees, positive eastward
+      integer, intent(in) :: mt
+         !! month [1..12]
+      integer, intent(in) :: dy
+         !! day [1..31]
+      integer, intent(in) :: hr
+         !! hour [0..23]
+      integer, intent(in) :: min
+         !! minute [0..59]
+
+
       real :: sinphi
+         !! Output: Sine of solar elevation angle [-]
+
       real :: lonr, latr, d, term, sl, sindel, cosdel, h
 
       d = 30.0 * real(mt - 1) + real(dy)

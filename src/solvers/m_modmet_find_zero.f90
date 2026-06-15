@@ -20,10 +20,19 @@ module m_modmet_find_zero
 
    abstract interface
 
+      ! ===========================================================
+      ! Function: solver_function
+      ! Description: Callback interface for scalar root finding.
+      ! input: x  - trial x coordinate
+      ! output: fx - function value and payload at x
+      ! ===========================================================
+      !! Callback interface for scalar root finding.
+      !!   Reference: ZEROAB routine interface used in KNMI legacy implementation.
       pure function solver_function(x) result(fx)
          import :: modmet_solver_result
          implicit none (type, external)
          real, intent(in) :: x
+         !! trial x coordinate
          type(modmet_solver_result) :: fx
       end function solver_function
    end interface
@@ -31,7 +40,6 @@ module m_modmet_find_zero
    public :: modmet_find_zero, modmet_solver_result
 contains
 
-   pure function modmet_find_zero(f, x0, x1, tol, max_iter) result(root)
    ! ===========================================================
    ! Function: modmet_find_zero
    ! Description: Finds a root of f(x) in [x0, x1] using a safeguarded
@@ -44,9 +52,19 @@ contains
    ! input: max_iter - maximum iterations
    ! output: root    - solver result (root, value, payload)
    ! ===========================================================
-      procedure(solver_function) :: f  ! function for which we want to find a root
-      real, intent(in) :: x0, x1, tol ! min, max, tolerance
-      integer, intent(in) :: max_iter ! maximum number of iterations
+   !! Finds a bracketed root using a safeguarded secant/Regula Falsi hybrid.
+   !!   Reference: KNMI ZEROAB safeguarded root-finding approach.
+   pure function modmet_find_zero(f, x0, x1, tol, max_iter) result(root)
+      procedure(solver_function) :: f
+      !! function for which we want to find a root
+      real, intent(in) :: x0
+      !! left bracket bound
+      real, intent(in) :: x1
+      !! right bracket bound
+      real, intent(in) :: tol
+      !! convergence tolerance on x
+      integer, intent(in) :: max_iter
+      !! maximum number of iterations
       type(modmet_solver_result) :: root
 
       ! Local history tracking variables

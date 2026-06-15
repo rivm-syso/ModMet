@@ -1,0 +1,8 @@
+project: ModMet
+summary: Meteorological processing module for atmospheric modeling
+author: RIVM (National Institute for Public Health and the Environment)
+email: marte.voorneveld@rivm.nl
+src_dir: ./src
+output_dir: ./docs
+docmark: !
+graph: true
