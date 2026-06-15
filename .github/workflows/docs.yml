@@ -3,16 +3,13 @@ name: Deploy Documentation to GitHub Pages
 on:
   push:
     branches: [main]
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -21,7 +18,7 @@ jobs:
   deploy-docs:
     environment:
       name: github-pages
-      url: ${{ steps: deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}  # Fixed the colon to a dot here
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -55,7 +52,6 @@ jobs:
       - name: Upload artifact for Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          # Change "doc/" to your specific output directory if defined differently in ModMet.ford
           path: 'doc/'
 
       - name: Deploy to GitHub Pages
