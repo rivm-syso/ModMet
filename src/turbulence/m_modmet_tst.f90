@@ -20,7 +20,6 @@ module m_modmet_tst
    private
    public :: modmet_tst, modmet_tst_result
 contains
-   pure function modmet_tst(ust, t, qsti) result(res)
    ! ===========================================================
    ! Function: modmet_tst
    ! Description: Computes temperature scale (tst) and humidity
@@ -32,7 +31,15 @@ contains
    ! output: res%qst - humidity scale
    ! ===========================================================
 
-      real, intent(in) :: ust, t, qsti
+   !! Computes temperature and humidity scales for day/night stability regimes.
+   !!   Reference: Van Ulden and Holtslag (1985), JCAM 24, 1196-1207.
+   pure function modmet_tst(ust, t, qsti) result(res)
+      real, intent(in) :: ust
+      !! friction velocity [m/s]
+      real, intent(in) :: t
+      !! air temperature [degC]
+      real, intent(in) :: qsti
+      !! isothermal net radiation [W/m^2]
       type(modmet_tst_result) :: res
 
       real :: ta, s, vst, d2, d3, d4, tst, qmg, cg, ch

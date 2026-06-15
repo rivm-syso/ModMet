@@ -14,7 +14,6 @@ module m_modmet_obuk
    private
    public :: modmet_obuk
 contains
-pure function modmet_obuk(ust, tst) result(ol)
    ! ===========================================================
    ! Function: modmet_obuk
    ! Description: Computes Obukhov length and returns a large-magnitude
@@ -23,7 +22,13 @@ pure function modmet_obuk(ust, tst) result(ol)
    ! input: tst - temperature scale
    ! output: ol - Obukhov length [m]
    ! ===========================================================
-      real, intent(in) :: ust, tst
+   !! Computes Obukhov length from friction velocity and temperature scale.
+   !!   Reference: OBUK routine from KNMI legacy implementation.
+pure function modmet_obuk(ust, tst) result(ol)
+   real, intent(in) :: ust
+   !! friction velocity [m/s]
+   real, intent(in) :: tst
+   !! temperature scale
       real :: ol
 
 
