@@ -11,11 +11,11 @@
 !   References: Holtslag and De Bruin (1987); Hicks (1976).
 !------------------------------------------------------------------------------
 module m_modmet_fpsim
-use modmet_constants, only: pid2
+use modmet_constants, only: pid2, EPS, PI
 
     implicit none (type, external)
     private
-    public :: modmet_fpsim
+    public :: modmet_fpsim, modmet_fpsim_holtslag
 contains
    ! ===========================================================
    ! Function: modmet_fpsim
@@ -43,4 +43,23 @@ contains
          end if
       end if
    end function modmet_fpsim
+
+   !! Computes the momentum stability correction function psi_m using the Holtslag 1984 formulation
+   pure function modmet_fpsim_holtslag(z, ol) result(fpsim_result)
+      real, intent(in) :: z, ol
+      real :: fpsim_result
+      real :: eta, y
+
+      eta = z / ol
+
+      if (ol > (0.0 + EPS)) then
+         fpsim_result = -17.0 * (1.0 - exp(-0.29 * eta))
+      else
+         ! v Ulden and Holtslag
+         y = (1.0 - 15.0 * eta)**0.25
+         fpsim_result = 2.0 * log((1.0 + y) / 2.0) + log((1.0 + y * y) / 2.0) - &
+            (2.0 * atan(y)) + (PI / 2.0)  ! 2.4 OPS report
+      end if
+
+   end function modmet_fpsim_holtslag
 end module m_modmet_fpsim
