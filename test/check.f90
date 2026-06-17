@@ -24,6 +24,7 @@ program tester
     use test_modmet_version, only: collect_modmet_version_tests
 
     use test_modmet_lusthov, only: collect_modmet_lusthov_tests
+    use test_modmet_z0corr, only: collect_modmet_z0corr_tests
 
     implicit none (type, external)
 
@@ -58,7 +59,9 @@ program tester
         ! test 10: lusthov test suite registration
         new_testsuite("modmet_lusthov_tests", collect_modmet_lusthov_tests), &
         ! test 11: version test suite registration
-        new_testsuite("modmet_version_tests", collect_modmet_version_tests) &
+        new_testsuite("modmet_version_tests", collect_modmet_version_tests), &
+        ! test 12: z0 correction test suite registration
+        new_testsuite("modmet_z0corr_tests", collect_modmet_z0corr_tests) &
         ]
 
     do is = 1, size(testsuites)
