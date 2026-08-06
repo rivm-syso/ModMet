@@ -95,7 +95,7 @@ contains
 
         sinphi = modmet_sunhgh(lat, lon, mt, dy, hr, min)
         flxln2_result = modmet_flxln2(0.0, u_zra, z0, zra, T, cloud_fraction, sinphi, kin)
-        
+
         if(modmet_missing(flxln2_result%ust)) then
             result%ust = -9999.0
             result%ol = -9999.0
