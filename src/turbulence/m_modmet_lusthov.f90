@@ -11,20 +11,20 @@
 !   Reference: Beljaars, Holtslag, and Van Westrhenen (1989), KNMI TR-112.
 !------------------------------------------------------------------------------
 module m_modmet_lusthov
-   use modmet_constants, only: LAMBDA
+   use modmet_constants, only: RK, LAMBDA
    use m_modmet_sunhgh, only: modmet_sunhgh
    use m_modmet_flxln2, only: modmet_flxln2, modmet_flxln2_result
    use m_modmet_helpers, only: modmet_missing
    implicit none (type, external)
 
    type :: modmet_lusthov_result
-      real :: ust
-      real :: qst
-      real :: ol
-      real :: kin
-      real :: h ! sensible heat flux
-      real :: evap ! evaporation rate
-      real :: tst ! temperature scale
+      real(RK) :: ust
+      real(RK) :: qst
+      real(RK) :: ol
+      real(RK) :: kin
+      real(RK) :: h ! sensible heat flux
+      real(RK) :: evap ! evaporation rate
+      real(RK) :: tst ! temperature scale
    end type modmet_lusthov_result
 
    private
@@ -71,46 +71,46 @@ contains
          !! hour (GMT) [0..23]
          integer, intent(in) :: min
          !! minute [0..59]
-         real, intent(in) :: lat
+         real(RK), intent(in) :: lat
          !! latitude [degrees, north positive]
-         real, intent(in) :: lon
+         real(RK), intent(in) :: lon
          !! longitude [degrees, east positive]
-         real, intent(in) :: kin
+         real(RK), intent(in) :: kin
          !! incoming shortwave radiation [W/m^2]
-         real, intent(in) :: z0
+         real(RK), intent(in) :: z0
          !! surface roughness length [m]
-         real, intent(in) :: zra
+         real(RK), intent(in) :: zra
          !! wind measurement/evaluation height [m]
-         real, intent(in) :: u_zra
+         real(RK), intent(in) :: u_zra
          !! wind speed at zra [m/s]
-         real, intent(in) :: T
+         real(RK), intent(in) :: T
          !! air temperature [degC]
-         real, intent(in) :: cloud_fraction
+         real(RK), intent(in) :: cloud_fraction
          !! cloud fraction [-] (0..1)
 
         type(modmet_flxln2_result) :: flxln2_result
         type(modmet_lusthov_result) :: result
-        real :: sinphi
+        real(RK) :: sinphi
 
 
         sinphi = modmet_sunhgh(lat, lon, mt, dy, hr, min)
-        flxln2_result = modmet_flxln2(0.0, u_zra, z0, zra, T, cloud_fraction, sinphi, kin)
+        flxln2_result = modmet_flxln2(0.0_RK, u_zra, z0, zra, T, cloud_fraction, sinphi, kin)
 
         if(modmet_missing(flxln2_result%ust)) then
-            result%ust = -9999.0
-            result%ol = -9999.0
-            result%kin = -9999.0
-            result%h = -9999.0
-            result%evap = -9999.0
-            result%tst = -9999.0
-            result%qst = -9999.0
+            result%ust = -9999.0_RK
+            result%ol = -9999.0_RK
+            result%kin = -9999.0_RK
+            result%h = -9999.0_RK
+            result%evap = -9999.0_RK
+            result%tst = -9999.0_RK
+            result%qst = -9999.0_RK
             return
         end if
         result%ust = flxln2_result%ust
         result%ol = flxln2_result%ol
         result%kin = flxln2_result%kin
         result%h = flxln2_result%h
-        result%evap = 3.6 * flxln2_result%le/LAMBDA
+        result%evap = 3.6_RK * flxln2_result%le/LAMBDA
         result%tst = flxln2_result%tst
         result%qst = flxln2_result%qst
 

@@ -13,7 +13,7 @@
 !   friction velocity and implied Obukhov length.
 !------------------------------------------------------------------------------
 module m_modnet_z0corr
-   use modmet_constants, only: VONK, TR, RO, CP_AIR, LAMBDA, EPS
+   use modmet_constants, only: RK, VONK, TR, RO, CP_AIR, LAMBDA, EPS
    use m_modmet_find_zero, only: modmet_find_zero, modmet_solver_result
 
    use m_modmet_fpsim, only: modmet_fpsim_holtslag
@@ -40,43 +40,43 @@ contains
    !!   temperature-effect corrections are not applied.
    subroutine modmet_solve_z0_corr(z0_in, z0_lu, ol_old, ust_old, ol_new, ust_new, &
        max_iter, tol, min_change)
-      real, intent(in) :: z0_in
+      real(RK), intent(in) :: z0_in
       !! source roughness length [m]
-      real, intent(in) :: z0_lu
+      real(RK), intent(in) :: z0_lu
       !! target roughness length [m]
-      real, intent(in) :: ol_old
+      real(RK), intent(in) :: ol_old
       !! original Obukhov length [m]
-      real, intent(in) :: ust_old
+      real(RK), intent(in) :: ust_old
       !! original friction velocity [m/s]
-      real, intent(out) :: ol_new
+      real(RK), intent(out) :: ol_new
       !! corrected Obukhov length [m]
-      real, intent(out) :: ust_new
+      real(RK), intent(out) :: ust_new
       !! corrected friction velocity [m/s]
       integer, intent(in), optional :: max_iter
       !! maximum iterations for root-finding (default 40)
-      real, intent(in), optional :: tol
+      real(RK), intent(in), optional :: tol
       !! convergence tolerance for root-finding (default 0.015)
-      real, intent(in), optional :: min_change
+      real(RK), intent(in), optional :: min_change
       !! minimum change for convergence (default 0.1)
 
       type(modmet_solver_result) :: solver_out
 
       ! Host variables shared with the internal objective function
-      real :: u50, h0_init
-      real :: x0, x1
-      real :: phim_init
+      real(RK) :: u50, h0_init
+      real(RK) :: x0, x1
+      real(RK) :: phim_init
       ! Local parameters for root-finding
       integer :: max_iter_local
-      real :: local_tol, local_min_change
+      real(RK) :: local_tol, local_min_change
 
-      real, parameter :: kappa = 0.4
-      real, parameter :: c1 = 93500.0
-      real, parameter :: z_ref = 50.0
+      real(RK), parameter :: kappa = 0.4_RK
+      real(RK), parameter :: c1 = 93500.0_RK
+      real(RK), parameter :: z_ref = 50.0_RK
 
 
       max_iter_local = 40
-      local_tol = 0.015
-      local_min_change = 0.1
+      local_tol = 0.015_RK
+      local_min_change = 0.1_RK
 
       if(present(max_iter)) max_iter_local = max_iter
       if(present(tol)) local_tol = tol
@@ -84,8 +84,8 @@ contains
 
       ! 2. Enforce validity of optional parameters, with fallbacks to defaults
       if (max_iter_local <= 0)   max_iter_local = 40
-      if (local_tol      <= 0.0) local_tol      = 0.015
-      if (local_min_change     <= 0.0) local_min_change     = 0.1
+      if (local_tol      <= 0.0_RK) local_tol      = 0.015_RK
+      if (local_min_change     <= 0.0_RK) local_min_change     = 0.1_RK
 
       if (abs(z0_in - z0_lu) < (local_min_change*z0_in - EPS)) then
          ! If the roughness lengths are already close, return original values
@@ -105,14 +105,14 @@ contains
       h0_init = -ust_old**3 * c1 / ol_old
 
       ! Define search bounds for friction velocity
-      if(ol_old < 0.0) then
+      if(ol_old < 0.0_RK) then
          ! Unstable case: bigger bounds to allow for potential increase in ustar with roughness
-         x0 = ust_old*0.01
-         x1 = 40.0 * ust_old
+         x0 = ust_old*0.01_RK
+         x1 = 40.0_RK * ust_old
       else
          ! Stable case: expect ustar to decrease with roughness, so search below old ustar
-         x0 = 0.001 * ust_old
-         x1 = ust_old*3.0
+         x0 = 0.001_RK * ust_old
+         x1 = ust_old*3.0_RK
       end if
 
       ! 3. Solve for friction velocity that satisfies roughness correction
@@ -121,9 +121,9 @@ contains
 
 
       ! 4. Map solver output to corrected state or sentinel values
-      if (solver_out%root == -9999.0 .or. solver_out%root == -999.0) then
-         ust_new = -999.0
-         ol_new  = -999.0
+      if (solver_out%root == -9999.0_RK .or. solver_out%root == -999.0_RK) then
+         ust_new = -999.0_RK
+         ol_new  = -999.0_RK
       else
          ust_new = solver_out%payload(1)
          ol_new  = solver_out%payload(2)
@@ -142,18 +142,18 @@ contains
       ! ===========================================================
       !! Internal residual function for roughness-length correction.
       pure function z0_corr_objective(ustar_guess) result(fx)
-         real, intent(in) :: ustar_guess
+         real(RK), intent(in) :: ustar_guess
          !! trial friction velocity [m/s]
          type(modmet_solver_result) :: fx
 
-         real :: phim, ol_implied, ustar_implied, ur, h0_local
+         real(RK) :: phim, ol_implied, ustar_implied, ur, h0_local
 
          ! Scale heat flux with ustar ratio (different exponents for stable/unstable)
          ur = ustar_guess / ust_old
-         if (h0_init < 0.0) then
-            h0_local = h0_init * (ur**0.8)
+         if (h0_init < 0.0_RK) then
+            h0_local = h0_init * (ur**0.8_RK)
          else
-            h0_local = h0_init * (ur**0.1)
+            h0_local = h0_init * (ur**0.1_RK)
          end if
 
          ol_implied = -ustar_guess**3 * c1 / h0_local
@@ -161,9 +161,9 @@ contains
 
          phim = modmet_fpsim_holtslag(z_ref, ol_implied)
 
-          if(log(z_ref / z0_lu) - phim <= 0.0) then
+          if(log(z_ref / z0_lu) - phim <= 0.0_RK) then
             ! Unphysical condition near free convection; force a large mismatch
-             ustar_implied = 999.0
+             ustar_implied = 999.0_RK
          else
              ustar_implied = kappa * u50 / (log(z_ref / z0_lu) - phim)
          end if

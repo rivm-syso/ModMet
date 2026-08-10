@@ -11,11 +11,11 @@
 !------------------------------------------------------------------------------
 
 module m_modmet_tst
-    use modmet_constants, only: KELVIN_OFFSET, RO, CP_AIR, LAMBDA, ALFA, AG, D1, TR
+    use modmet_constants, only: RK, KELVIN_OFFSET, RO, CP_AIR, LAMBDA, ALFA, AG, D1, TR
     implicit none (type, external)
    type :: modmet_tst_result
-      real :: tst ! Temperature scale
-      real :: qst ! Humidity scale
+      real(RK) :: tst ! Temperature scale
+      real(RK) :: qst ! Humidity scale
    end type modmet_tst_result
    private
    public :: modmet_tst, modmet_tst_result
@@ -34,39 +34,39 @@ contains
    !! Computes temperature and humidity scales for day/night stability regimes.
    !!   Reference: Van Ulden and Holtslag (1985), JCAM 24, 1196-1207.
    pure function modmet_tst(ust, t, qsti) result(res)
-      real, intent(in) :: ust
+      real(RK), intent(in) :: ust
       !! friction velocity [m/s]
-      real, intent(in) :: t
+      real(RK), intent(in) :: t
       !! air temperature [degC]
-      real, intent(in) :: qsti
+      real(RK), intent(in) :: qsti
       !! isothermal net radiation [W/m^2]
       type(modmet_tst_result) :: res
 
-      real :: ta, s, vst, d2, d3, d4, tst, qmg, cg, ch
-      real, parameter :: sigma = 5.67e-8, gz5 = 50.0, gammad = 0.01, zr = 50.0
+      real(RK) :: ta, s, vst, d2, d3, d4, tst, qmg, cg, ch
+      real(RK), parameter :: sigma = 5.67e-8_RK, gz5 = 50.0_RK, gammad = 0.01_RK, zr = 50.0_RK
 
-      ta = t + KELVIN_OFFSET - 0.15 ! old temperature conversion was t + 273.
+      ta = t + KELVIN_OFFSET - 0.15_RK ! old temperature conversion was t + 273.
       ! actual Kelvin offset is 273.15
-      s  = exp(0.055 * (ta - 279.0))
+      s  = exp(0.055_RK * (ta - 279.0_RK))
 
-      if (qsti < 0.0) then
+      if (qsti < 0.0_RK) then
          ! Night scheme
          vst = ust / gz5
 
-         d2  = 0.5 * (1.0 + s) * RO * CP_AIR * gz5 / (4.0 * sigma * TR**3 + AG)
-         d3  = -qsti / (4.0 * sigma * TR**4 + AG * TR) + gammad * zr / TR
-         d4  = d2 * 0.033 * 2.0 / TR
+         d2  = 0.5_RK * (1.0_RK + s) * RO * CP_AIR * gz5 / (4.0_RK * sigma * TR**3 + AG)
+         d3  = -qsti / (4.0_RK * sigma * TR**4 + AG * TR) + gammad * zr / TR
+         d4  = d2 * 0.033_RK * 2.0_RK / TR
 
          tst = TR * (sqrt((D1 * vst**2 + d2 * vst**3)**2 + d3 * vst**2 + d4 * vst**3) -&
              D1 * vst**2 - d2 * vst**3)
-         qmg = qsti + (4.0 * sigma * TR**3 + AG) * &
-         (2.0 * tst * D1 + (tst / vst)**2 / TR - gammad * zr)
+         qmg = qsti + (4.0_RK * sigma * TR**3 + AG) * &
+         (2.0_RK * tst * D1 + (tst / vst)**2 / TR - gammad * zr)
       else
          ! Day scheme
-         ch  = 0.38 * (((1.0 - ALFA) * s + 1.0) / (s + 1.0))
-         cg  = (AG / (4.0 * sigma * ta**3)) * ch
-         qmg = (1.0 - cg) * qsti / (1.0 + ch)
-         tst = (-((1.0 - ALFA) * s + 1.0) * qmg / (s + 1.0)) / (RO * CP_AIR * ust) + ALFA * 0.033
+         ch  = 0.38_RK * (((1.0_RK - ALFA) * s + 1.0_RK) / (s + 1.0_RK))
+         cg  = (AG / (4.0_RK * sigma * ta**3)) * ch
+         qmg = (1.0_RK - cg) * qsti / (1.0_RK + ch)
+         tst = (-((1.0_RK - ALFA) * s + 1.0_RK) * qmg / (s + 1.0_RK)) / (RO * CP_AIR * ust) + ALFA * 0.033_RK
       end if
       res%tst = tst
       res%qst = (-qmg - RO * CP_AIR * ust * tst) / (RO * LAMBDA * ust)
