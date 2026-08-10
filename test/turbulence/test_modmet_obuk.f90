@@ -46,7 +46,8 @@ contains
       ! test 3: negative temperature scale gives negative Obukhov length
         ol = modmet_obuk(0.5_RK, -0.01_RK)
         call check(error, ol, -1804.84692_RK, &
-           message="modmet_obuk did not return expected Obukhov length for negative tst", thr=1.0e-4_RK)
+           message="modmet_obuk did not return expected Obukhov length for negative tst",&
+             thr=1.0e-4_RK)
 
     end subroutine test_obuk
 end module test_modmet_obuk

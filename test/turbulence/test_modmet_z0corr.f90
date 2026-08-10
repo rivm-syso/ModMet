@@ -97,7 +97,7 @@ contains
       call modmet_solve_z0_corr(z0_in, z0_lu, ol_old, ust_old, ol_new, ust_new, &
          max_iter=-10, tol=-0.01_RK, min_change=-0.05_RK)
 
-      
+
       call check(error, ust_new, 0.397354_RK, message="6: Unexpected ust value", thr=1e-3_RK)
       call check(error, ol_new, 182.867157_RK, message="6: Unexpected ol value", thr=1e-4_RK)
 

@@ -74,7 +74,7 @@ contains
       T = 20.0_RK
       cloud_fraction = 0.1_RK
       result = modmet_lusthov(mt, dy, hr, min, lat, lon, kin, z0, zra, u_zra, T, cloud_fraction)
-      
+
       call check(error, result%ust, 1.04003716_RK, message="Unexpected ust value", thr=1e-6_RK)
       call check(error, result%ol, 5122.795083_RK, message="Unexpected ol value", thr=1e-4_RK)
       call check(error, result%kin, 200.0_RK, message="Unexpected kin value", thr=1e-6_RK)

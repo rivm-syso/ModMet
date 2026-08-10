@@ -43,7 +43,7 @@ module modmet_constants
    ! Numerical constants
    real(RK), parameter :: EPS = 1.0e-6_RK              ! small number for numerical stability
    real(RK), parameter :: PI = 3.14159265358979323846_RK
-   real(RK), parameter :: PI180 = 180.0_RK / PI        ! degree/radian conversion factor angle / PI180
+   real(RK), parameter :: PI180 = 180.0_RK / PI        ! degree/radian conversion factor
    real(RK), parameter :: PID2 = PI / 2.0_RK
 
 end module modmet_constants

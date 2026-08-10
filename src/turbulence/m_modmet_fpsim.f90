@@ -39,7 +39,8 @@ contains
          if (eta > 200.0_RK) then
             fpsim_result = -0.7_RK * eta - 10.72_RK
          else
-            fpsim_result = -0.7_RK * eta - (0.75_RK * eta - 10.72_RK) * exp(-0.35_RK * eta) - 10.72_RK
+            fpsim_result = -0.7_RK * eta - (0.75_RK * eta - 10.72_RK) *&
+                exp(-0.35_RK * eta) - 10.72_RK
          end if
       end if
    end function modmet_fpsim

@@ -66,7 +66,8 @@ contains
          ch  = 0.38_RK * (((1.0_RK - ALFA) * s + 1.0_RK) / (s + 1.0_RK))
          cg  = (AG / (4.0_RK * sigma * ta**3)) * ch
          qmg = (1.0_RK - cg) * qsti / (1.0_RK + ch)
-         tst = (-((1.0_RK - ALFA) * s + 1.0_RK) * qmg / (s + 1.0_RK)) / (RO * CP_AIR * ust) + ALFA * 0.033_RK
+         tst = (-((1.0_RK - ALFA) * s + 1.0_RK) * qmg /&
+             (s + 1.0_RK)) / (RO * CP_AIR * ust) + ALFA * 0.033_RK
       end if
       res%tst = tst
       res%qst = (-qmg - RO * CP_AIR * ust * tst) / (RO * LAMBDA * ust)

@@ -140,7 +140,8 @@ contains
 
       type(modmet_flxln2_result) :: res
 
-      res = modmet_flxln2(real(u1, kind=RK), real(u2, kind=RK), real(zu1, kind=RK), real(zu2, kind=RK), real(T, kind=RK), &
+      res = modmet_flxln2(real(u1, kind=RK), real(u2, kind=RK), real(zu1, kind=RK), &
+         real(zu2, kind=RK), real(t, kind=RK), &
          real(cloud_fraction, kind=RK), real(sinphi, kind=RK), real(kin, kind=RK))
       ust = real(res%ust, kind=c_double)
       ol = real(res%ol, kind=c_double)
@@ -176,7 +177,8 @@ contains
       type(modmet_lusthov_result) :: res
 
       res = modmet_lusthov(int(mt), int(dy), int(hr), int(mn), real(lat, kind=RK), &
-         real(lon, kind=RK), real(kin, kind=RK), real(z0, kind=RK), real(zra, kind=RK), real(u_zra, kind=RK), real(t, kind=RK), &
+         real(lon, kind=RK), real(kin, kind=RK), real(z0, kind=RK), real(zra, kind=RK), &
+         real(u_zra, kind=RK), real(t, kind=RK), &
          real(cloud_fraction, kind=RK))
 
       ust = real(res%ust, kind=c_double)
@@ -203,7 +205,8 @@ contains
 
       real(RK) :: ol_new_f, ust_new_f
 
-      call modmet_solve_z0_corr(real(z0_in, kind=RK), real(z0_lu, kind=RK), real(ol_old, kind=RK), real(ust_old, kind=RK),&
+      call modmet_solve_z0_corr(real(z0_in, kind=RK), real(z0_lu, kind=RK), &
+         real(ol_old, kind=RK), real(ust_old, kind=RK),&
           ol_new_f, ust_new_f, int(max_iter), real(tol, kind=RK), real(min_change, kind=RK))
 
       ol_new = real(ol_new_f, kind=c_double)

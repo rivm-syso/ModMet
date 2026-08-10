@@ -43,7 +43,8 @@ contains
       sl = 4.871_RK + 0.0175_RK * d + term
       sindel = 0.398_RK * sin(sl)
       cosdel = sqrt(1.0_RK - sindel**2)
-      h = lonr + 0.043_RK * sin(2.0_RK * sl) - term + 0.262_RK * (real(hr, kind=RK) + real(min, kind=RK) / 60.0_RK) - PI
+      h = lonr + 0.043_RK * sin(2.0_RK * sl) - term + 0.262_RK * &
+         (real(hr, kind=RK) + real(min, kind=RK) / 60.0_RK) - PI
       sinphi = sindel * sin(latr) + cosdel * cos(latr) * cos(h)
    end function modmet_sunhgh
 
