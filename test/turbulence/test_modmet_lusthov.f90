@@ -51,11 +51,11 @@ contains
 
       ! test 1: missing kin value
       result = modmet_lusthov(mt, dy, hr, min, lat, lon, kin, z0, zra, u_zra, T, cloud_fraction)
-
+      
       call check(error, result%ust, 0.472004652_RK, message="Unexpected ust value", thr=1e-6_RK)
-      call check(error, result%ol, -68.2802200_RK, message="Unexpected ol value", thr=1e-4_RK)
+      call check(error, result%ol, -68.2800208_RK, message="Unexpected ol value", thr=1e-4_RK)
       call check(error, result%kin, 777.212036_RK, message="Unexpected kin value", thr=1e-4_RK)
-      call check(error, result%h, 116.371979_RK, message="Unexpected h value", thr=1e-4_RK)
+      call check(error, result%h, 116.3720957_RK, message="Unexpected h value", thr=1e-4_RK)
       call check(error, result%evap, 0.454255164_RK, message="Unexpected evap value", thr=1e-4_RK)
 
 

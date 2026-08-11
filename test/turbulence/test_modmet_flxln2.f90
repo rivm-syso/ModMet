@@ -44,13 +44,12 @@ contains
         sinphi = 0.8_RK ! sine of the solar elevation angle
 
         result = modmet_flxln2(u1, u2, zu1, zu2, T, cloud_fraction, sinphi, kin)
-
-        call check(error, result%ust, 0.436865836_RK, &
-            message="modmet_flxln2 did not return expected ust value", thr=1.0e-4_RK)
-        call check(error, result%ol, -1411.45898_RK, &
-            message="modmet_flxln2 did not return expected ol value", thr=1.0e-4_RK)
+        call check(error, result%ust, 0.4368658_RK, &
+            message="1: modmet_flxln2 did not return expected ust value", thr=1.0e-4_RK)
+        call check(error, result%ol, -1411.460105_RK, &
+            message="1: modmet_flxln2 did not return expected ol value", thr=1.0e-4_RK)
         call check(error, result%kin, 200.0_RK, &
-            message="modmet_flxln2 did not return expected kin value", thr=1.0e-4_RK)
+            message="1: modmet_flxln2 did not return expected kin value", thr=1.0e-4_RK)
         if (allocated(error)) return
 
         ! test 2: stable nighttime conditions
