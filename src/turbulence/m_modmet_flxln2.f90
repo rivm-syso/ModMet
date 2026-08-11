@@ -103,7 +103,7 @@ contains
       ust_guess = 0.01_RK*ust_guess ! Start with a smaller initial guess to ensure convergence
 
 
-      solver_result = modmet_find_zero(momentum_f, ust_guess, max_ust, tol=1.0e-12_RK, max_iter=100)
+      solver_result = modmet_find_zero(momentum_f, ust_guess, max_ust, tol=1.0e-6_RK, max_iter=100)
 
       result%ust = solver_result%root
 
