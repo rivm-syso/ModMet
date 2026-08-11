@@ -136,6 +136,8 @@ fi
 
 - v1.1.0 Added `modmet_z0corr` solver for roughness length correction, with improved convergence criteria and error handling. Updated documentation and test cases to reflect new functionality. This release includes a critical fix for edge cases in the z0 correction solver, ensuring more robust performance across a wider range of input conditions.
 
+- v1.1.0 Added `modmet_z0corr` solver for roughness length correction, with improved convergence criteria and error handling. Updated documentation and test cases to reflect new functionality. This release includes a critical fix for edge cases in the z0 correction solver, ensuring more robust performance across a wider range of input conditions.
+
 - v1.0.0 Initial public release with core features and tests. Based on the old `modmeteo.f90` used within RIVM's MetPro and DEPAC-1D internal packages. The package is fully tested and ready for use in RIVM's surface modeling applications. with 100% code coverage.
 
 - 0.6.0 First public release with core features and tests. Based on the old `modmeteo.f90` used within RIVM's MetPro and DEPAC-1D internal packages. We will be releasing further improved and fully tested packages in the future.
