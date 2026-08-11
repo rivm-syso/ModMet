@@ -20,6 +20,7 @@ module m_modmet_flxln2
    use m_modmet_obuk, only: modmet_obuk
    use m_modmet_fpsim, only: modmet_fpsim
 
+   use m_modmet_helpers, only: modmet_missing
    implicit none (type, external)
 
 
@@ -30,6 +31,8 @@ module m_modmet_flxln2
       real :: tau
       real :: h
       real :: le
+      real :: tst
+      real :: qst
    end type modmet_flxln2_result
 
 
@@ -103,12 +106,26 @@ contains
       solver_result = modmet_find_zero(momentum_f, ust_guess, max_ust, tol=1.0e-12, max_iter=100)
 
       result%ust = solver_result%root
+
+      if (result%ust < 0.0 .or. modmet_missing(result%ust)) then
+         result%ust = -9999.0
+         result%tst = -9999.0
+         result%qst = -9999.0
+         result%ol = -9999.0
+         result%kin = -9999.0
+         result%tau = -9999.0
+         result%h = -9999.0
+         result%le = -9999.0
+         return
+      end if
+      result%tst = solver_result%payload(2)
+      result%qst = solver_result%payload(3)
       result%ol = solver_result%payload(1) ! Obukhov length from the momentum function
       result%kin = rad_result%kin
 
       result%tau = RO * result%ust**2
-      result%h = -RO * CP_AIR * solver_result%payload(2) * result%ust
-      result%le = -RO * LAMBDA * solver_result%payload(3) * result%ust
+      result%h = -RO * CP_AIR * result%tst * result%ust
+      result%le = -RO * LAMBDA * result%qst  * result%ust
 
    contains
       ! ===========================================================
