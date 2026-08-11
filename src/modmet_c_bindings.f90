@@ -11,7 +11,7 @@
 !------------------------------------------------------------------------------
 module modmet_c_bindings
    use, intrinsic :: iso_c_binding, only: c_char, c_double, c_f_pointer, c_int, c_null_char, c_ptr
-   use modmet, only: VERSION, modmet_cloud_fraction, modmet_obuk, modmet_sunhgh
+   use modmet, only: RK, VERSION, modmet_cloud_fraction, modmet_obuk, modmet_sunhgh
    use m_modmet_fpsim, only: modmet_fpsim, modmet_fpsim_holtslag
    use m_modmet_tst, only: modmet_tst, modmet_tst_result
    use m_modmet_flxln2, only: modmet_flxln2, modmet_flxln2_result
@@ -61,7 +61,7 @@ contains
       real(c_double), value, intent(in) :: tst
       real(c_double) :: ol
 
-      ol = real(modmet_obuk(real(ust), real(tst)), kind=c_double)
+      ol = real(modmet_obuk(real(ust, kind=RK), real(tst, kind=RK)), kind=c_double)
    end function modmet_obuk_c
 
    function modmet_sunhgh_c(lat, lon, mt, dy, hr, mn) result(sinphi) bind(C, name="modmet_sunhgh_c")
@@ -73,7 +73,7 @@ contains
       integer(c_int), value, intent(in) :: mn
       real(c_double) :: sinphi
 
-      sinphi = real(modmet_sunhgh(real(lat), real(lon), int(mt), &
+      sinphi = real(modmet_sunhgh(real(lat, kind=RK), real(lon, kind=RK), int(mt), &
          int(dy), int(hr), int(mn)), kind=c_double)
    end function modmet_sunhgh_c
 
@@ -87,15 +87,15 @@ contains
       integer(c_int), value, intent(in) :: hr
       real(c_double) :: cloud_fraction
 
-      cloud_fraction = real(modmet_cloud_fraction(real(lat), real(lon), &
-         real(jcm2), int(mt), int(dy), int(hr)), kind=c_double)
+      cloud_fraction = real(modmet_cloud_fraction(real(lat, kind=RK), real(lon, kind=RK), &
+         real(jcm2, kind=RK), int(mt), int(dy), int(hr)), kind=c_double)
    end function modmet_cloud_fraction_c
 
    function modmet_fpsim_c(eta) result(fpsim_value) bind(C, name="modmet_fpsim_c")
       real(c_double), value, intent(in) :: eta
       real(c_double) :: fpsim_value
 
-      fpsim_value = real(modmet_fpsim(real(eta)), kind=c_double)
+      fpsim_value = real(modmet_fpsim(real(eta, kind=RK)), kind=c_double)
    end function modmet_fpsim_c
 
    function modmet_fpsim_holtslag_c(z, ol)&
@@ -104,7 +104,7 @@ contains
       real(c_double), value, intent(in) :: ol
       real(c_double) :: fpsim_value
 
-      fpsim_value = real(modmet_fpsim_holtslag(real(z), real(ol)), kind=c_double)
+      fpsim_value = real(modmet_fpsim_holtslag(real(z, kind=RK), real(ol, kind=RK)), kind=c_double)
    end function modmet_fpsim_holtslag_c
 
    subroutine modmet_tst_c(ust, t, qsti, tst, qst) bind(C, name="modmet_tst_c")
@@ -116,7 +116,7 @@ contains
 
       type(modmet_tst_result) :: res
 
-      res = modmet_tst(real(ust), real(t), real(qsti))
+      res = modmet_tst(real(ust, kind=RK), real(t, kind=RK), real(qsti, kind=RK))
       tst = real(res%tst, kind=c_double)
       qst = real(res%qst, kind=c_double)
    end subroutine modmet_tst_c
@@ -140,8 +140,9 @@ contains
 
       type(modmet_flxln2_result) :: res
 
-      res = modmet_flxln2(real(u1), real(u2), real(zu1), real(zu2), real(t), &
-         real(cloud_fraction), real(sinphi), real(kin))
+      res = modmet_flxln2(real(u1, kind=RK), real(u2, kind=RK), real(zu1, kind=RK), &
+         real(zu2, kind=RK), real(t, kind=RK), &
+         real(cloud_fraction, kind=RK), real(sinphi, kind=RK), real(kin, kind=RK))
       ust = real(res%ust, kind=c_double)
       ol = real(res%ol, kind=c_double)
       kin_out = real(res%kin, kind=c_double)
@@ -175,9 +176,10 @@ contains
 
       type(modmet_lusthov_result) :: res
 
-      res = modmet_lusthov(int(mt), int(dy), int(hr), int(mn), real(lat), &
-         real(lon), real(kin), real(z0), real(zra), real(u_zra), real(t), &
-         real(cloud_fraction))
+      res = modmet_lusthov(int(mt), int(dy), int(hr), int(mn), real(lat, kind=RK), &
+         real(lon, kind=RK), real(kin, kind=RK), real(z0, kind=RK), real(zra, kind=RK), &
+         real(u_zra, kind=RK), real(t, kind=RK), &
+         real(cloud_fraction, kind=RK))
 
       ust = real(res%ust, kind=c_double)
       ol = real(res%ol, kind=c_double)
@@ -201,10 +203,11 @@ contains
       real(c_double), intent(out) :: ol_new
       real(c_double), intent(out) :: ust_new
 
-      real :: ol_new_f, ust_new_f
+      real(RK) :: ol_new_f, ust_new_f
 
-      call modmet_solve_z0_corr(real(z0_in), real(z0_lu), real(ol_old), real(ust_old),&
-          ol_new_f, ust_new_f, int(max_iter), real(tol), real(min_change))
+      call modmet_solve_z0_corr(real(z0_in, kind=RK), real(z0_lu, kind=RK), &
+         real(ol_old, kind=RK), real(ust_old, kind=RK),&
+          ol_new_f, ust_new_f, int(max_iter), real(tol, kind=RK), real(min_change, kind=RK))
 
       ol_new = real(ol_new_f, kind=c_double)
       ust_new = real(ust_new_f, kind=c_double)

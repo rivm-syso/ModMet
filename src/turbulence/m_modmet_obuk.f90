@@ -9,7 +9,7 @@
 !   temperature scale.
 !------------------------------------------------------------------------------
 module m_modmet_obuk
-    use modmet_constants, only: GRAVITY, VONK, TR, EPS
+    use modmet_constants, only: RK, GRAVITY, VONK, TR, EPS
    implicit none (type, external)
    private
    public :: modmet_obuk
@@ -25,15 +25,15 @@ contains
    !! Computes Obukhov length from friction velocity and temperature scale.
    !!   Reference: OBUK routine from KNMI legacy implementation.
 pure function modmet_obuk(ust, tst) result(ol)
-   real, intent(in) :: ust
+   real(RK), intent(in) :: ust
    !! friction velocity [m/s]
-   real, intent(in) :: tst
+   real(RK), intent(in) :: tst
    !! temperature scale
-      real :: ol
+      real(RK) :: ol
 
 
       if (abs(tst) < EPS) then
-         ol = -1e5 ! effectively infinite Obukhov length
+         ol = -1e5_RK ! effectively infinite Obukhov length
          return
       end if
 

@@ -11,35 +11,39 @@
 !   the basis of this package.
 !------------------------------------------------------------------------------
 module modmet_constants
+   use, intrinsic :: iso_fortran_env, only: real64
    implicit none (type, external)
    public
 
+   ! Working precision kind
+   integer, parameter :: RK = real64          ! double precision real kind [-]
+
    ! Fundamental constants
-   real, parameter :: VONK = 0.4                 ! von Karman constant [-]
-   real, parameter :: GRAVITY = 9.8              ! gravitational acceleration [m/s^2]
-   real, parameter :: KELVIN_OFFSET = 273.15     ! offset to convert Celsius to Kelvin [K]
-   real, parameter :: CP_AIR = 1005.0
+   real(RK), parameter :: VONK = 0.4_RK                 ! von Karman constant [-]
+   real(RK), parameter :: GRAVITY = 9.8_RK              ! gravitational acceleration [m/s^2]
+   real(RK), parameter :: KELVIN_OFFSET = 273.15_RK     ! offset to convert Celsius to Kelvin [K]
+   real(RK), parameter :: CP_AIR = 1005.0_RK
 
    ! Reference-state constants
-   real, parameter :: TR = KELVIN_OFFSET + 9.85  ! reference temperature [K] (9.85 C)
-   real, parameter :: PRESSURE_REF = 1005.0      ! reference pressure [hPa]
-   real, parameter :: RO = PRESSURE_REF / (2.87 * TR) ! reference density [kg/m^3]
+   real(RK), parameter :: TR = KELVIN_OFFSET + 9.85_RK  ! reference temperature [K] (9.85 C)
+   real(RK), parameter :: PRESSURE_REF = 1005.0_RK      ! reference pressure [hPa]
+   real(RK), parameter :: RO = PRESSURE_REF / (2.87_RK * TR) ! reference density [kg/m^3]
 
    ! Thermodynamic constants
-   real, parameter :: LAMBDA = 2465.0 - 2.38 * (10.0 - 15.0)
-   real, parameter :: GAMMA = CP_AIR / (LAMBDA * 0.622) ! psychrometric constant (K/hPa)
+   real(RK), parameter :: LAMBDA = 2465.0_RK - 2.38_RK * (10.0_RK - 15.0_RK)
+   real(RK), parameter :: GAMMA = CP_AIR / (LAMBDA * 0.622_RK) ! psychrometric constant (K/hPa)
 
    ! Surface and scheme parameters
-   real, parameter :: ALBEDO = 0.23              ! surface albedo [-]
-   real, parameter :: D1 = 15.0                  ! empirical night-scheme constant [-]
-   real, parameter :: ALFA = 1.0                 ! Priestley-Taylor day-scheme coefficient [-]
-   real, parameter :: AG = 5.0                   ! soil heat transfer coefficient
-   real, parameter :: AL_VEG = 0.23              ! typical albedo for vegetation [-]
+   real(RK), parameter :: ALBEDO = 0.23_RK              ! surface albedo [-]
+   real(RK), parameter :: D1 = 15.0_RK                  ! empirical night-scheme constant [-]
+   real(RK), parameter :: ALFA = 1.0_RK                 ! Priestley-Taylor day-scheme coefficient [-]
+   real(RK), parameter :: AG = 5.0_RK                   ! soil heat transfer coefficient
+   real(RK), parameter :: AL_VEG = 0.23_RK              ! typical albedo for vegetation [-]
 
    ! Numerical constants
-   real, parameter :: EPS = 1.0e-6              ! small number for numerical stability
-   real, parameter :: PI = 3.14159265358979323846
-   real, parameter :: PI180 = 180.0 / PI        ! degree/radian conversion factor angle / PI180
-   real, parameter :: PID2 = PI / 2.0
+   real(RK), parameter :: EPS = 1.0e-6_RK              ! small number for numerical stability
+   real(RK), parameter :: PI = 3.14159265358979323846_RK
+   real(RK), parameter :: PI180 = 180.0_RK / PI        ! degree/radian conversion factor
+   real(RK), parameter :: PID2 = PI / 2.0_RK
 
 end module modmet_constants

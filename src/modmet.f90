@@ -10,6 +10,7 @@
 !   calculations and supporting numerical methods.
 !------------------------------------------------------------------------------
 module modmet
+   use modmet_constants, only: RK
    use m_modmet_helpers, only: modmet_missing
 
    ! radiation
@@ -37,6 +38,8 @@ module modmet
 
 
    public :: modmet_missing, &
+   ! working precision kind
+      RK, &
    ! radiation
       modmet_radiat, modmet_radiat_result, &
       modmet_sunhgh, modmet_cloud_fraction, &

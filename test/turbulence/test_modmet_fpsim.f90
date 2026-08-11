@@ -9,6 +9,7 @@
 module test_modmet_fpsim
    use testdrive, only : new_unittest, unittest_type, error_type, check
 
+   use modmet_constants, only: RK
    use m_modmet_fpsim, only: modmet_fpsim
    implicit none (type, external)
    private
@@ -26,30 +27,30 @@ contains
 
    subroutine test_fpsim(error)
       type(error_type), allocatable, intent(out) :: error
-      real :: fpsim
+      real(RK) :: fpsim
 
       ! test 1: unstable condition eta = -0.1
-      fpsim = modmet_fpsim(-0.1)
-      call check(error, fpsim, 0.283613801, &
-         message="fpsim not as expected for eta=-0.1", thr=1.0e-3)
+      fpsim = modmet_fpsim(-0.1_RK)
+      call check(error, fpsim, 0.283613801_RK, &
+         message="fpsim not as expected for eta=-0.1", thr=1.0e-3_RK)
       if (allocated(error)) return
 
       ! test 2: neutral condition eta = 0.0
-      fpsim = modmet_fpsim(0.0)
-      call check(error, fpsim, 0.0, &
-         message="fpsim not as expected for eta=0.0", thr=1.0e-3)
+      fpsim = modmet_fpsim(0.0_RK)
+      call check(error, fpsim, 0.0_RK, &
+         message="fpsim not as expected for eta=0.0", thr=1.0e-3_RK)
       if (allocated(error)) return
 
       ! test 3: stable condition eta = 10.0
-      fpsim = modmet_fpsim(10.0)
-      call check(error, fpsim, -17.6227646, &
-         message="fpsim not as expected for eta=10.0", thr=1.0e-3)
+      fpsim = modmet_fpsim(10.0_RK)
+      call check(error, fpsim, -17.6227646_RK, &
+         message="fpsim not as expected for eta=10.0", thr=1.0e-3_RK)
       if (allocated(error)) return
 
       ! test 4: very stable condition eta = 230.0
-      fpsim = modmet_fpsim(230.0)
-      call check(error, fpsim, -171.720001, &
-         message="fpsim not as expected for eta=230.0", thr=1.0e-3)
+      fpsim = modmet_fpsim(230.0_RK)
+      call check(error, fpsim, -171.720001_RK, &
+         message="fpsim not as expected for eta=230.0", thr=1.0e-3_RK)
       if (allocated(error)) return
 
     end subroutine test_fpsim
