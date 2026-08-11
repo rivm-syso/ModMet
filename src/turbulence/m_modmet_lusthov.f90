@@ -14,14 +14,17 @@ module m_modmet_lusthov
    use modmet_constants, only: LAMBDA
    use m_modmet_sunhgh, only: modmet_sunhgh
    use m_modmet_flxln2, only: modmet_flxln2, modmet_flxln2_result
+   use m_modmet_helpers, only: modmet_missing
    implicit none (type, external)
 
    type :: modmet_lusthov_result
       real :: ust
+      real :: qst
       real :: ol
       real :: kin
       real :: h ! sensible heat flux
       real :: evap ! evaporation rate
+      real :: tst ! temperature scale
    end type modmet_lusthov_result
 
    private
@@ -93,11 +96,23 @@ contains
         sinphi = modmet_sunhgh(lat, lon, mt, dy, hr, min)
         flxln2_result = modmet_flxln2(0.0, u_zra, z0, zra, T, cloud_fraction, sinphi, kin)
 
+        if(modmet_missing(flxln2_result%ust)) then
+            result%ust = -9999.0
+            result%ol = -9999.0
+            result%kin = -9999.0
+            result%h = -9999.0
+            result%evap = -9999.0
+            result%tst = -9999.0
+            result%qst = -9999.0
+            return
+        end if
         result%ust = flxln2_result%ust
         result%ol = flxln2_result%ol
         result%kin = flxln2_result%kin
         result%h = flxln2_result%h
         result%evap = 3.6 * flxln2_result%le/LAMBDA
+        result%tst = flxln2_result%tst
+        result%qst = flxln2_result%qst
 
    end function modmet_lusthov
 

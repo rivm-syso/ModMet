@@ -128,6 +128,7 @@ fi
 ```
 
 ## Version
+- v1.2.0 Added C-bindings for `modmet` module, enabling integration with C/C++ applications.
 
 - v1.1.0 Added `modmet_z0corr` solver for roughness length correction, with improved convergence criteria and error handling. Updated documentation and test cases to reflect new functionality. This release includes a critical fix for edge cases in the z0 correction solver, ensuring more robust performance across a wider range of input conditions.
 
