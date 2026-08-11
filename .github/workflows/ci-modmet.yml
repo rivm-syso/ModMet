@@ -22,7 +22,7 @@ jobs:
         with:
           environment-file: modmet.yml
           activate-environment: modmet
-          auto-activate-base: false
+          auto-activate: false
           use-only-tar-bz2: false
       - name: Install fortitude-lint==0.9.0
         run: pip install fortitude-lint
@@ -41,7 +41,7 @@ jobs:
         with:
           environment-file: modmet.yml
           activate-environment: modmet
-          auto-activate-base: false
+          auto-activate: false
           use-only-tar-bz2: false
       - name: Build with fpm
         shell: bash -el {0}
@@ -62,7 +62,7 @@ jobs:
         with:
           environment-file: modmet.yml
           activate-environment: modmet
-          auto-activate-base: false
+          auto-activate: false
           use-only-tar-bz2: false
       - name: Run tests
         shell: bash -el {0}
@@ -81,7 +81,7 @@ jobs:
         with:
           environment-file: modmet.yml
           activate-environment: modmet
-          auto-activate-base: false
+          auto-activate: false
           use-only-tar-bz2: false
       - name: Generate coverage report
         shell: bash -el {0}
