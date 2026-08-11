@@ -9,6 +9,7 @@
 module test_modmet_helpers
    use testdrive, only : new_unittest, unittest_type, error_type, check
 
+   use modmet_constants, only: RK
    use m_modmet_helpers, only: modmet_missing
    implicit none (type, external)
    private
@@ -29,13 +30,13 @@ contains
       logical :: is_missing
 
       ! test 1: real missing sentinel should be detected
-      is_missing = modmet_missing(-9999.0)
+      is_missing = modmet_missing(-9999.0_RK)
 
       call check(error, is_missing, .true., &
          message="modmet_missing did not return the expected missing value")
 
       ! test 2: valid real value should not be missing
-      is_missing = modmet_missing(0.0)
+      is_missing = modmet_missing(0.0_RK)
 
       call check(error, is_missing, .false., &
          message="modmet_missing incorrectly identified 0.0 as missing value")

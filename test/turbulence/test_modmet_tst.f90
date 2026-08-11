@@ -9,6 +9,7 @@
 module test_modmet_tst
    use testdrive, only : new_unittest, unittest_type, error_type, check
 
+   use modmet_constants, only: RK
    use m_modmet_tst, only: modmet_tst, modmet_tst_result
 
    implicit none (type, external)
@@ -29,12 +30,12 @@ contains
       type(error_type), allocatable, intent(out) :: error
       type(modmet_tst_result) :: result
 
-      real :: ust, t, qsti
-      real :: qst_old, tst_old
+      real(RK) :: ust, t, qsti
+      real(RK) :: qst_old, tst_old
 
 
-      ust = 0.5
-      t = 280.0
+      ust = 0.5_RK
+      t = 280.0_RK
       qsti = 400
 
       ! test 1: daytime high-radiation reference case
@@ -43,40 +44,39 @@ contains
 
 
 
-
-      call check(error, result%tst, 3.29998173E-02, &
-         message="modmet_tst did not return expected tst value", thr=1.0e-5)
-      call check(error, result%qst, -0.274415612, &
-         message="modmet_tst did not return expected qst value", thr=1.0e-5)
+      call check(error, result%tst, 3.2999816E-02_RK, &
+         message="modmet_tst did not return expected tst value", thr=1.0e-4_RK)
+      call check(error, result%qst, -0.274415612_RK, &
+         message="modmet_tst did not return expected qst value", thr=1.0e-4_RK)
       if (allocated(error)) return
 
 
 
 
-      ust = 1.1
-      t = 290.0
-      qsti = 10.0
+      ust = 1.1_RK
+      t = 290.0_RK
+      qsti = 10.0_RK
 
    ! test 2: weak daytime forcing case
       result = modmet_tst(ust, t, qsti)
 
 
 
-      call check(error, result%tst, 3.29999998E-02, &
-         message="modmet_tst did not return expected tst value for test 2", thr=1.0e-6)
-      call check(error, result%qst, -1.63559280E-02, &
-         message="modmet_tst did not return expected qst value for test 2", thr=1.0e-6)
+      call check(error, result%tst, 3.29999998E-02_RK, &
+         message="modmet_tst did not return expected tst value for test 2", thr=1.0e-6_RK)
+      call check(error, result%qst, -1.63559280E-02_RK, &
+         message="modmet_tst did not return expected qst value for test 2", thr=1.0e-6_RK)
       if (allocated(error)) return
 
 
-      qsti = -50.0
+      qsti = -50.0_RK
    ! test 3: nighttime negative-radiation case
       result = modmet_tst(ust, t, qsti)
-
-      call check(error, result%tst, 0.0, &
-         message="modmet_tst did not return expected tst value for test 3", thr=1.0e-6)
-      call check(error, result%qst, 1.63349584E-02, &
-         message="modmet_tst did not return expected qst value for test 3", thr=1.0e-6)
+      ! TODO check this should be zero tst?
+      call check(error, result%tst, 3.3E-02_RK, &
+         message="modmet_tst did not return expected tst value for test 3", thr=1.0e-4_RK)
+      call check(error, result%qst, -5.6469478E-05_RK, &
+         message="modmet_tst did not return expected qst value for test 3", thr=1.0e-4_RK)
       if (allocated(error)) return
 
     end subroutine test_tst

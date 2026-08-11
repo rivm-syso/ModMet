@@ -6,7 +6,7 @@
 ! Updated:    June 11 2026
 !------------------------------------------------------------------------------
 module m_modmet_sunhgh
-    use modmet_constants, only: PI, PI180
+    use modmet_constants, only: RK, PI, PI180
    implicit none (type, external)
    private
    public :: modmet_sunhgh
@@ -17,9 +17,9 @@ contains
    pure function modmet_sunhgh(lat, lon, mt, dy, hr, min) result(sinphi)
 
    ! Arguments
-      real, intent(in) :: lat
+      real(RK), intent(in) :: lat
          !! latitude in degrees, positive northward
-      real, intent(in) :: lon
+      real(RK), intent(in) :: lon
          !! longitude in degrees, positive eastward
       integer, intent(in) :: mt
          !! month [1..12]
@@ -31,19 +31,20 @@ contains
          !! minute [0..59]
 
 
-      real :: sinphi
+      real(RK) :: sinphi
          !! Output: Sine of solar elevation angle [-]
 
-      real :: lonr, latr, d, term, sl, sindel, cosdel, h
+      real(RK) :: lonr, latr, d, term, sl, sindel, cosdel, h
 
-      d = 30.0 * real(mt - 1) + real(dy)
+      d = 30.0_RK * real(mt - 1, kind=RK) + real(dy, kind=RK)
       lonr = lon / PI180
       latr = lat / PI180
-      term = 0.033 * sin(0.0175 * d)
-      sl = 4.871 + 0.0175 * d + term
-      sindel = 0.398 * sin(sl)
-      cosdel = sqrt(1.0 - sindel**2)
-      h = lonr + 0.043 * sin(2.0 * sl) - term + 0.262 * (real(hr) + real(min) / 60.0) - PI
+      term = 0.033_RK * sin(0.0175_RK * d)
+      sl = 4.871_RK + 0.0175_RK * d + term
+      sindel = 0.398_RK * sin(sl)
+      cosdel = sqrt(1.0_RK - sindel**2)
+      h = lonr + 0.043_RK * sin(2.0_RK * sl) - term + 0.262_RK * &
+         (real(hr, kind=RK) + real(min, kind=RK) / 60.0_RK) - PI
       sinphi = sindel * sin(latr) + cosdel * cos(latr) * cos(h)
    end function modmet_sunhgh
 
