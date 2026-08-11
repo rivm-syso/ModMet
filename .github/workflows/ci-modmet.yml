@@ -68,14 +68,44 @@ jobs:
         shell: bash -el {0}
         run: fpm test
 
+  coverage:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v4
+        with:
+          path: ~/conda_pkgs_dir
+          key: ${{ runner.os }}-conda-${{ hashFiles('modmet.yml') }}
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          environment-file: modmet.yml
+          activate-environment: modmet
+          auto-activate-base: false
+          use-only-tar-bz2: false
+      - name: Generate coverage report
+        shell: bash -el {0}
+        run: ./scripts/gen_coverage.sh
+      - name: Store coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: coverage_html/
+
   version_release:
-    needs: [lint, build, test]
+    needs: [lint, build, test, coverage]
     if: "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.event.head_commit.message, 'chore: bump version to ') }}"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-html
+          path: coverage_html/
 
       - name: Configure Git identity
         run: |
@@ -85,18 +115,24 @@ jobs:
       - name: Bump version files
         run: ./scripts/bump_version.sh
 
+      - name: Update coverage badge in README
+        run: COVERAGE_ENV_FILE=coverage.env ./scripts/update_coverage_badge.sh
+
       - name: Read bump metadata
         run: |
           source version.env
+          source coverage.env
           echo "old_version=${OLD_VERSION}" >> "$GITHUB_OUTPUT"
           echo "new_version=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
           echo "release_date=${RELEASE_DATE}" >> "$GITHUB_OUTPUT"
+          echo "coverage_percent=${COVERAGE_PERCENT}" >> "$GITHUB_OUTPUT"
+          echo "coverage_color=${COVERAGE_COLOR}" >> "$GITHUB_OUTPUT"
         id: bump
 
       - name: Commit and tag
         run: |
           source version.env
-          git add VERSION src/modmet_version.f90
+          git add VERSION README.md src/modmet_version.f90
           git commit -m "chore: bump version to ${NEW_VERSION}"
           if git rev-parse "${NEW_VERSION}" >/dev/null 2>&1; then
             echo "Tag ${NEW_VERSION} already exists locally" >&2
@@ -118,3 +154,4 @@ jobs:
           body: |
             Automated release for ModMet version ${{ steps.bump.outputs.new_version }}.
             Release date: ${{ steps.bump.outputs.release_date }}.
+            Coverage: ${{ steps.bump.outputs.coverage_percent }}% (${{ steps.bump.outputs.coverage_color }}).
