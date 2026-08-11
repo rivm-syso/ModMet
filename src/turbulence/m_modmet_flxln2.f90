@@ -99,8 +99,8 @@ contains
 
 
       ust_guess = (u2-u1) * VONK / log(zu2/zu1) !initial guess for ust based on log profile
-      max_ust = 5.0_RK * ust_guess ! Set a reasonable upper limit for ust
-      ust_guess = 0.1_RK*ust_guess ! Start with a smaller initial guess to ensure convergence
+      max_ust = 10.0_RK * ust_guess ! Set a reasonable upper limit for ust
+      ust_guess = 0.01_RK*ust_guess ! Start with a smaller initial guess to ensure convergence
 
 
       solver_result = modmet_find_zero(momentum_f, ust_guess, max_ust, tol=1.0e-12_RK, max_iter=100)
