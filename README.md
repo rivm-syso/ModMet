@@ -1,4 +1,4 @@
-![Static Badge](https://img.shields.io/badge/coverage-100%25-green)
+![Coverage](https://img.shields.io/badge/coverage-92.13%25-orange)
 ![GitHub Tag](https://img.shields.io/github/v/tag/rivm-syso/ModMet)
 ![Release Date](https://img.shields.io/badge/release-2026--03--12-blue)
 # ModMet: Modular Meteorology Functions
@@ -77,7 +77,7 @@ fpm test --profile debug --flag --coverage --flag -O0
 Generate a coverage report using the provided script:
 
 ```bash
-./gen_coverage.sh
+./scripts/gen_coverage.sh
 ```
 
 This script:

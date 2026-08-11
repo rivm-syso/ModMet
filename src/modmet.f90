@@ -11,6 +11,7 @@
 !------------------------------------------------------------------------------
 module modmet
    use modmet_constants, only: RK
+   use modmet_version, only: VERSION, RELEASE_DATE, BUILD_DATE
    use m_modmet_helpers, only: modmet_missing
 
    ! radiation
@@ -30,10 +31,6 @@ module modmet
 
    implicit none (type, external)
 
-
-  character(len=*), parameter :: VERSION = "1.2.0"
-  character(len=*), parameter :: BUILD_DATE = "2026-07-06"
-
    private
 
 
@@ -52,6 +49,6 @@ module modmet
    ! solvers
       modmet_find_zero, modmet_solver_result, &
    ! version info
-      VERSION, BUILD_DATE
+      VERSION, RELEASE_DATE, BUILD_DATE
 
 end module modmet

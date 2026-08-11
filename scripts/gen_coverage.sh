@@ -2,10 +2,15 @@
 
 # Run tests in debug mode with coverage instrumentation enabled.
 
-fpm test --profile debug --flag --coverage --flag -O0
+fpm test --profile debug --flag --coverage --flag -O0;
 
-# Generate raw gcov output files under coverage_html/.
-mkdir -p coverage_html && (   cd coverage_html &&   gcov ../build/gfortran_*/ModMet/src*.gcda -r ../src/ -b; )
+rm -rf coverage_html;
+
+mkdir -p coverage_html;
+
+gcov build/gfortran_*/ModMet/src*.gcda -b;
+
+mv -f *.f90.gcov coverage_html/;
 
 # Collect coverage data into a single LCOV tracefile.
 geninfo ./build/gfortran_*/ModMet/src*.gcda -b . -o ./coverage_html/coverage.info
