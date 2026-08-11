@@ -1,5 +1,8 @@
 name: CI ModMet
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: [main, develop]
@@ -64,3 +67,54 @@ jobs:
       - name: Run tests
         shell: bash -el {0}
         run: fpm test
+
+  version_release:
+    needs: [lint, build, test]
+    if: "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.event.head_commit.message, 'chore: bump version to ') }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version files
+        run: ./scripts/bump_version.sh
+
+      - name: Read bump metadata
+        run: |
+          source version.env
+          echo "old_version=${OLD_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "new_version=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "release_date=${RELEASE_DATE}" >> "$GITHUB_OUTPUT"
+        id: bump
+
+      - name: Commit and tag
+        run: |
+          source version.env
+          git add VERSION src/modmet_version.f90
+          git commit -m "chore: bump version to ${NEW_VERSION}"
+          if git rev-parse "${NEW_VERSION}" >/dev/null 2>&1; then
+            echo "Tag ${NEW_VERSION} already exists locally" >&2
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/${NEW_VERSION}" >/dev/null 2>&1; then
+            echo "Tag ${NEW_VERSION} already exists on origin" >&2
+            exit 1
+          fi
+          git tag "${NEW_VERSION}"
+          git push origin HEAD:main
+          git push origin "${NEW_VERSION}"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.bump.outputs.new_version }}
+          name: ModMet ${{ steps.bump.outputs.new_version }}
+          body: |
+            Automated release for ModMet version ${{ steps.bump.outputs.new_version }}.
+            Release date: ${{ steps.bump.outputs.release_date }}.
