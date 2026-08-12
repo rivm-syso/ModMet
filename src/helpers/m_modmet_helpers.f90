@@ -7,6 +7,7 @@
 !   This module provides helper functions for the ModMet library.
 !------------------------------------------------------------------------------
 module m_modmet_helpers
+   use modmet_constants, only: RK
    implicit none (type, external)
    private
    public :: modmet_missing
@@ -19,10 +20,10 @@ module m_modmet_helpers
    end interface
 contains
    pure logical function missing_real(x)
-      real, intent(in) :: x
+      real(RK), intent(in) :: x
       !! the real value to check
-      real, parameter :: EPS = 1.0e-5
-      missing_real = (abs(x + 999.) <= EPS .or. abs(x + 9999.) <= EPS)
+      real(RK), parameter :: EPS = 1.0e-5_RK
+      missing_real = (abs(x + 999._RK) <= EPS .or. abs(x + 9999._RK) <= EPS)
    end function missing_real
 
    pure logical function missing_int(x)

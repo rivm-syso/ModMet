@@ -10,6 +10,8 @@
 !   calculations and supporting numerical methods.
 !------------------------------------------------------------------------------
 module modmet
+   use modmet_constants, only: RK
+   use modmet_version, only: VERSION, RELEASE_DATE, BUILD_DATE
    use m_modmet_helpers, only: modmet_missing
 
    ! radiation
@@ -29,14 +31,12 @@ module modmet
 
    implicit none (type, external)
 
-
-  character(len=*), parameter :: VERSION = "v1.1.0"
-  character(len=*), parameter :: BUILD_DATE = "2026-06-17"
-
    private
 
 
    public :: modmet_missing, &
+   ! working precision kind
+      RK, &
    ! radiation
       modmet_radiat, modmet_radiat_result, &
       modmet_sunhgh, modmet_cloud_fraction, &
@@ -49,6 +49,6 @@ module modmet
    ! solvers
       modmet_find_zero, modmet_solver_result, &
    ! version info
-      VERSION, BUILD_DATE
+      VERSION, RELEASE_DATE, BUILD_DATE
 
 end module modmet

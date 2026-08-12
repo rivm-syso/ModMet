@@ -9,13 +9,14 @@
 !   method with Regula Falsi fallback for robustness inside a bracket.
 !------------------------------------------------------------------------------
 module m_modmet_find_zero
+   use modmet_constants, only: RK
 
    implicit none (type, external)
 
    type :: modmet_solver_result
-      real :: value  ! The function value at the given x
-      real :: root  ! The estimated root value
-      real :: payload(10)  ! Additional data for the solver to be passed back to the caller
+      real(RK) :: value  ! The function value at the given x
+      real(RK) :: root  ! The estimated root value
+      real(RK) :: payload(10)  ! Additional data for the solver to be passed back to the caller
    end type modmet_solver_result
 
    abstract interface
@@ -30,8 +31,9 @@ module m_modmet_find_zero
       !!   Reference: ZEROAB routine interface used in KNMI legacy implementation.
       pure function solver_function(x) result(fx)
          import :: modmet_solver_result
+         import :: RK
          implicit none (type, external)
-         real, intent(in) :: x
+         real(RK), intent(in) :: x
          !! trial x coordinate
          type(modmet_solver_result) :: fx
       end function solver_function
@@ -57,24 +59,24 @@ contains
    pure function modmet_find_zero(f, x0, x1, tol, max_iter) result(root)
       procedure(solver_function) :: f
       !! function for which we want to find a root
-      real, intent(in) :: x0
+      real(RK), intent(in) :: x0
       !! left bracket bound
-      real, intent(in) :: x1
+      real(RK), intent(in) :: x1
       !! right bracket bound
-      real, intent(in) :: tol
+      real(RK), intent(in) :: tol
       !! convergence tolerance on x
       integer, intent(in) :: max_iter
       !! maximum number of iterations
       type(modmet_solver_result) :: root
 
       ! Local history tracking variables
-      real :: xl, xr, xb   ! X positions: Left, Right, and Bracket bound
+      real(RK) :: xl, xr, xb   ! X positions: Left, Right, and Bracket bound
       type(modmet_solver_result) :: fl, fr, fb   ! Function values at those positions
-      real :: x_next       ! The newly calculated guess
+      real(RK) :: x_next       ! The newly calculated guess
       type(modmet_solver_result) :: fx_next      ! Function value at the new guess
       integer :: iter
 
-      real, parameter :: tiny = 1.0e-30 ! A small number to prevent division by zero
+      real(RK), parameter :: tiny = 1.0e-30_RK ! A small number to prevent division by zero
 
 
       ! --- Step 1: Initialize Boundaries ---
@@ -106,10 +108,10 @@ contains
       fx_next = fl ! Just to initialize the variable, will be overwritten in the loop
 
       ! Verify that the root is actually bracketed (Intermediate Value Theorem)
-      if (sign(1.0, fl%value) == sign(1.0, fr%value)) then
+      if (sign(1.0_RK, fl%value) == sign(1.0_RK, fr%value)) then
          root = fr ! Return best guess
-         root%value = -9999.0 ! Indicate failure to find root
-         root%root = -9999.0 ! Indicate failure to bracket
+         root%value = -9999.0_RK ! Indicate failure to find root
+         root%root = -9999.0_RK ! Indicate failure to bracket
          return
       end if
 
@@ -117,8 +119,8 @@ contains
          ! Zero-division safety protection
          if (fl%value == fr%value) then
             root = fr
-            root%root = -999.0 ! Indicate failure due to zero slope
-            root%value = -999.0 ! Indicate failure due to zero slope
+            root%root = -999.0_RK ! Indicate failure due to zero slope
+            root%value = -999.0_RK ! Indicate failure due to zero slope
             return
          end if
 
@@ -128,7 +130,7 @@ contains
 
          ! 2. Safety Check: If the Secant step overshoots outside the bracket,
          !    fall back to a Regula Falsi (False Position) step instead.
-         if (sign(1.0, x_next - xb) == sign(1.0, x_next - xr)) then
+         if (sign(1.0_RK, x_next - xb) == sign(1.0_RK, x_next - xr)) then
             x_next = xb - (xr - xb) * fb%value / (fr%value - fb%value)
          end if
 
@@ -142,7 +144,7 @@ contains
          fx_next = f(x_next)
 
          ! 4. Update the fallback bracket bound if the signs align
-         if (sign(1.0, fx_next%value) == sign(1.0, fb%value)) then
+         if (sign(1.0_RK, fx_next%value) == sign(1.0_RK, fb%value)) then
             xb = xr
             fb = fr
          end if

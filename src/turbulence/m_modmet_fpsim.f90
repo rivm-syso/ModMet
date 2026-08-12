@@ -11,7 +11,7 @@
 !   References: Holtslag and De Bruin (1987); Hicks (1976).
 !------------------------------------------------------------------------------
 module m_modmet_fpsim
-use modmet_constants, only: pid2, EPS, PI
+use modmet_constants, only: RK, pid2, EPS, PI
 
     implicit none (type, external)
     private
@@ -27,38 +27,39 @@ contains
       !! Computes the momentum stability correction function psi_m.
       !!   Reference: Beljaars and Holtslag (1991); Hicks (1976).
       pure function modmet_fpsim(eta) result(fpsim_result)
-         real, intent(in) :: eta
+         real(RK), intent(in) :: eta
          !! stability parameter z/L [-]
-      real :: fpsim_result
-      real :: x
+      real(RK) :: fpsim_result
+      real(RK) :: x
 
-      if (eta < 0.0) then
-         x = sqrt(sqrt(1.0 - 16.0 * eta))
-         fpsim_result = log((1.0 + x)**2 * (1.0 + x**2) / 8.0) - 2.0 * atan(x) + pid2
+      if (eta < 0.0_RK) then
+         x = sqrt(sqrt(1.0_RK - 16.0_RK * eta))
+         fpsim_result = log((1.0_RK + x)**2 * (1.0_RK + x**2) / 8.0_RK) - 2.0_RK * atan(x) + pid2
       else
-         if (eta > 200.0) then
-            fpsim_result = -0.7 * eta - 10.72
+         if (eta > 200.0_RK) then
+            fpsim_result = -0.7_RK * eta - 10.72_RK
          else
-            fpsim_result = -0.7 * eta - (0.75 * eta - 10.72) * exp(-0.35 * eta) - 10.72
+            fpsim_result = -0.7_RK * eta - (0.75_RK * eta - 10.72_RK) *&
+                exp(-0.35_RK * eta) - 10.72_RK
          end if
       end if
    end function modmet_fpsim
 
    !! Computes the momentum stability correction function psi_m using the Holtslag 1984 formulation
    pure function modmet_fpsim_holtslag(z, ol) result(fpsim_result)
-      real, intent(in) :: z, ol
-      real :: fpsim_result
-      real :: eta, y
+      real(RK), intent(in) :: z, ol
+      real(RK) :: fpsim_result
+      real(RK) :: eta, y
 
       eta = z / ol
 
-      if (ol > (0.0 + EPS)) then
-         fpsim_result = -17.0 * (1.0 - exp(-0.29 * eta))
+      if (ol > (0.0_RK + EPS)) then
+         fpsim_result = -17.0_RK * (1.0_RK - exp(-0.29_RK * eta))
       else
          ! v Ulden and Holtslag
-         y = (1.0 - 15.0 * eta)**0.25
-         fpsim_result = 2.0 * log((1.0 + y) / 2.0) + log((1.0 + y * y) / 2.0) - &
-            (2.0 * atan(y)) + (PI / 2.0)  ! 2.4 OPS report
+         y = (1.0_RK - 15.0_RK * eta)**0.25_RK
+         fpsim_result = 2.0_RK * log((1.0_RK + y) / 2.0_RK) + log((1.0_RK + y * y) / 2.0_RK) - &
+            (2.0_RK * atan(y)) + (PI / 2.0_RK)  ! 2.4 OPS report
       end if
 
    end function modmet_fpsim_holtslag

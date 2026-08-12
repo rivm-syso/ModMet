@@ -1,5 +1,8 @@
 name: CI ModMet
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: [main, develop]
@@ -10,16 +13,16 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/conda_pkgs_dir
           key: ${{ runner.os }}-conda-${{ hashFiles('modmet.yml') }}
-      - uses: conda-incubator/setup-miniconda@v3
+      - uses: conda-incubator/setup-miniconda@8ee1f361103df19b6f8c8655fd3967a8ecb162d5 # v4
         with:
           environment-file: modmet.yml
           activate-environment: modmet
-          auto-activate-base: false
+          auto-activate: false
           use-only-tar-bz2: false
       - name: Install fortitude-lint==0.9.0
         run: pip install fortitude-lint
@@ -29,16 +32,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/conda_pkgs_dir
           key: ${{ runner.os }}-conda-${{ hashFiles('modmet.yml') }}
-      - uses: conda-incubator/setup-miniconda@v3
+      - uses: conda-incubator/setup-miniconda@8ee1f361103df19b6f8c8655fd3967a8ecb162d5 # v4
         with:
           environment-file: modmet.yml
           activate-environment: modmet
-          auto-activate-base: false
+          auto-activate: false
           use-only-tar-bz2: false
       - name: Build with fpm
         shell: bash -el {0}
@@ -50,17 +53,105 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/conda_pkgs_dir
           key: ${{ runner.os }}-conda-${{ hashFiles('modmet.yml') }}
-      - uses: conda-incubator/setup-miniconda@v3
+      - uses: conda-incubator/setup-miniconda@8ee1f361103df19b6f8c8655fd3967a8ecb162d5 # v4
         with:
           environment-file: modmet.yml
           activate-environment: modmet
-          auto-activate-base: false
+          auto-activate: false
           use-only-tar-bz2: false
       - name: Run tests
         shell: bash -el {0}
         run: fpm test
+
+  coverage:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/conda_pkgs_dir
+          key: ${{ runner.os }}-conda-${{ hashFiles('modmet.yml') }}
+      - uses: conda-incubator/setup-miniconda@8ee1f361103df19b6f8c8655fd3967a8ecb162d5 # v4
+        with:
+          environment-file: modmet.yml
+          activate-environment: modmet
+          auto-activate: false
+          use-only-tar-bz2: false
+      - name: Generate coverage report
+        shell: bash -el {0}
+        run: ./scripts/gen_coverage.sh
+      - name: Store coverage artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: coverage-html
+          path: coverage_html/
+
+  version_release:
+    needs: [lint, build, test, coverage]
+    if: "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.event.head_commit.message, 'chore: bump version to ') }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: coverage-html
+          path: coverage_html/
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version files
+        run: ./scripts/bump_version.sh
+
+      - name: Update coverage badge in README
+        run: COVERAGE_ENV_FILE=coverage.env ./scripts/update_coverage_badge.sh
+
+      - name: Read bump metadata
+        run: |
+          source version.env
+          source coverage.env
+          echo "old_version=${OLD_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "new_version=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "release_date=${RELEASE_DATE}" >> "$GITHUB_OUTPUT"
+          echo "coverage_percent=${COVERAGE_PERCENT}" >> "$GITHUB_OUTPUT"
+          echo "coverage_color=${COVERAGE_COLOR}" >> "$GITHUB_OUTPUT"
+        id: bump
+
+      - name: Commit and tag
+        run: |
+          source version.env
+          git add VERSION README.md src/modmet_version.f90
+          git commit -m "chore: bump version to ${NEW_VERSION}"
+          if git rev-parse "${NEW_VERSION}" >/dev/null 2>&1; then
+            echo "Tag ${NEW_VERSION} already exists locally" >&2
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/${NEW_VERSION}" >/dev/null 2>&1; then
+            echo "Tag ${NEW_VERSION} already exists on origin" >&2
+            exit 1
+          fi
+          git tag "${NEW_VERSION}"
+          git push origin HEAD:main
+          git push origin "${NEW_VERSION}"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          tag_name: ${{ steps.bump.outputs.new_version }}
+          name: ModMet ${{ steps.bump.outputs.new_version }}
+          body: |
+            Automated release for ModMet version ${{ steps.bump.outputs.new_version }}.
+            Release date: ${{ steps.bump.outputs.release_date }}.
+            Coverage: ${{ steps.bump.outputs.coverage_percent }}% (${{ steps.bump.outputs.coverage_color }}).

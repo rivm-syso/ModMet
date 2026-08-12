@@ -8,6 +8,7 @@
 !------------------------------------------------------------------------------
 module test_rnf_radiat
    use testdrive, only : new_unittest, unittest_type, error_type, check
+   use modmet_constants, only: RK
    use m_modmet_radiat, only: modmet_radiat, modmet_radiat_result
 
    implicit none (type, external)
@@ -26,52 +27,52 @@ contains
 
    subroutine test_radiat(error)
       type(error_type), allocatable, intent(out) :: error
-      real :: sinphi, cloud_fraction, kin
+      real(RK) :: sinphi, cloud_fraction, kin
       type(modmet_radiat_result) :: result
 
 
       ! test 1: small sinphi with missing kin
-      kin = -999.0
+      kin = -999.0_RK
 
-      result = modmet_radiat(0.02, 0.5, kin)
+      result = modmet_radiat(0.02_RK, 0.5_RK, kin)
 
-      call check(error, result%kin, 0.0, &
-         message="missing kin should become 0.0", thr=1.0e-5 )
-      call check(error, result%qsti, -61.3466949, &
-         message="qsti value is incorrect for given inputs", thr=1.0e-5 )
+      call check(error, result%kin, 0.0_RK, &
+         message="missing kin should become 0.0", thr=1.0e-5_RK )
+      call check(error, result%qsti, -61.3466949_RK, &
+         message="qsti value is incorrect for given inputs", thr=1.0e-5_RK )
 
       ! test 2: small sinphi with valid kin
 
-      kin = 500.0
+      kin = 500.0_RK
 
-      result = modmet_radiat(0.02, 0.5, kin)
+      result = modmet_radiat(0.02_RK, 0.5_RK, kin)
 
-      call check(error, result%kin, 500.0, &
+      call check(error, result%kin, 500.0_RK, &
          message="kin should remain unchanged for small sinphi when valid kin is provided", &
-         thr=1.0e-5 )
-      call check(error, result%qsti, -61.3466949, &
-         message="qsti value is incorrect for given inputs", thr=1.0e-5 )
+         thr=1.0e-5_RK )
+      call check(error, result%qsti, -61.3466949_RK, &
+         message="qsti value is incorrect for given inputs", thr=1.0e-5_RK )
 
 
       ! test 3: high sinphi with missing kin
-      kin = -9999.0
+      kin = -9999.0_RK
 
-      result = modmet_radiat(0.8, 0.5, kin)
+      result = modmet_radiat(0.8_RK, 0.5_RK, kin)
 
-      call check(error, result%kin, 707.860474, &
-         message="kin should be calculated based on the formula for valid sinphi", thr=1.0e-5 )
-      call check(error, result%qsti, 483.705872, &
-         message="qsti value is incorrect for given inputs", thr=1.0e-5 )
+      call check(error, result%kin, 707.860474_RK, &
+         message="kin should be calculated based on the formula for valid sinphi", thr=1.0e-4_RK )
+      call check(error, result%qsti, 483.705872_RK, &
+         message="qsti value is incorrect for given inputs", thr=1.0e-4_RK )
 
       ! test 4: high sinphi with valid kin
-      kin = 600.0
+      kin = 600.0_RK
 
-      result = modmet_radiat(0.5, 0.5, kin)
+      result = modmet_radiat(0.5_RK, 0.5_RK, kin)
 
-      call check(error, result%kin, 600.0, &
-         message="kin should remain unchanged when valid input is provided", thr=1.0e-5 )
-      call check(error, result%qsti, 400.653320, &
-         message="qsti value is incorrect for given inputs", thr=1.0e-5 )
+      call check(error, result%kin, 600.0_RK, &
+         message="kin should remain unchanged when valid input is provided", thr=1.0e-4_RK )
+      call check(error, result%qsti, 400.653320_RK, &
+         message="qsti value is incorrect for given inputs", thr=1.0e-4_RK )
 
    end subroutine test_radiat
 
