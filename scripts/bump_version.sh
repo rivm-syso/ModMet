@@ -22,7 +22,28 @@ fi
 
 normalized_current="${current_version#v}"
 
-IFS='.' read -r major minor patch extra <<< "${normalized_current}"
+is_semver() {
+  [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+}
+
+latest_tag_version="$(git tag --list | sed 's/^v//' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1 || true)"
+
+main_version=""
+if git rev-parse --verify origin/main >/dev/null 2>&1; then
+  main_version="$(git show origin/main:VERSION 2>/dev/null | tr -d '[:space:]' | sed 's/^v//' || true)"
+fi
+
+version_candidates="${normalized_current}"
+if is_semver "${latest_tag_version:-0.0.0}"; then
+  version_candidates+=$'\n'"${latest_tag_version}"
+fi
+if is_semver "${main_version:-0.0.0}"; then
+  version_candidates+=$'\n'"${main_version}"
+fi
+
+baseline_version="$(printf '%s\n' "${version_candidates}" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)"
+
+IFS='.' read -r major minor patch extra <<< "${baseline_version}"
 
 if [[ -n "${extra:-}" ]] || [[ -z "${major:-}" ]] || [[ -z "${minor:-}" ]] || [[ -z "${patch:-}" ]]; then
   echo "ERROR: VERSION must use semantic format MAJOR.MINOR.PATCH (optionally prefixed with v)" >&2
@@ -59,7 +80,8 @@ cat > version.env <<EOF
 OLD_VERSION=${normalized_current}
 NEW_VERSION=${new_version}
 RELEASE_DATE=${release_date}
+BASELINE_VERSION=${baseline_version}
 EOF
 
-echo "Bumped VERSION: ${normalized_current} -> ${new_version}"
+echo "Bumped VERSION: ${normalized_current} -> ${new_version} (baseline: ${baseline_version})"
 echo "Updated RELEASE_DATE: ${release_date}"
