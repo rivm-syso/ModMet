@@ -1,6 +1,6 @@
 ![Coverage](https://img.shields.io/badge/coverage-92.13%25-orange)
 ![GitHub Tag](https://img.shields.io/github/v/tag/rivm-syso/ModMet)
-![Release Date](https://img.shields.io/badge/release-2026--03--12-blue)
+![Release Date](https://img.shields.io/badge/release-2026--08--11-blue)
 # ModMet: Modular Meteorology Functions
 
 ModMet is a scientific Fortran library and toolkit for meteorological calculations used in atmospheric and environmental modeling workflows. Specifically, it is developed at RIVM for use in surface modelling, ModMet provides robust routines for radiation, turbulence, helper utilities, and numerical solvers in a modular codebase. In the future, we plan to expand the library with additional meteorological routines and utilities used in modelling of airborne particles and air quality within RIVM.
