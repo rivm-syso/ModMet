@@ -11,7 +11,7 @@ module modmet_version
    implicit none (type, external)
    private
 
-   character(len=*), parameter, public :: VERSION = "1.2.1"
+   character(len=*), parameter, public :: VERSION = "1.2.2"
    character(len=*), parameter, public :: RELEASE_DATE = "2026-08-12"
    character(len=*), parameter, public :: BUILD_DATE = RELEASE_DATE
 
